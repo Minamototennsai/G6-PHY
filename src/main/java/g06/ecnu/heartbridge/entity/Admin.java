@@ -8,7 +8,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 实体
+ *  Entity
  * </p>
  *
  * @author Tennsai Minamoto

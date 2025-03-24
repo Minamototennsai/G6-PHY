@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * <p>
- *  Controller 类
+ *  Controller
  * </p>
  *
  * @author Tennsai Minamoto
@@ -28,23 +28,17 @@ public class AuthController {
     }
 
     @PostMapping("/user/register")
-    public ResponseEntity register(@RequestParam String username,@RequestParam String phone, @RequestParam String email, @RequestParam String password, @RequestParam String confirmPassword, @RequestParam int agree){
-        if (agree == 0){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"请阅读并同意相关协议\"}");
-        } else if (!password.equals(confirmPassword)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"两次密码不一致\"}");
-        } else {
-            return authService.register(username, password, phone, email);
-        }
+    public ResponseEntity<Object> register(@RequestParam String username,@RequestParam String phone, @RequestParam(required = false) String email, @RequestParam String password, @RequestParam String confirmPassword, @RequestParam int agree){
+        return authService.register(username, password, phone, email, confirmPassword, agree);
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity login(@RequestParam String id, @RequestParam String password){
+    public ResponseEntity<Object> login(@RequestParam String id, @RequestParam String password){
         return authService.login(id, password);
     }
 
     @PostMapping("/admin/login")
-    public ResponseEntity loginAdmin(@RequestParam String id, @RequestParam String password){
+    public ResponseEntity<Object> loginAdmin(@RequestParam String id, @RequestParam String password){
         return authService.loginAdmin(id, password);
     }
 }

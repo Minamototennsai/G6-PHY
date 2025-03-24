@@ -17,7 +17,7 @@ public class CodeGenerator {
         String outputDir = System.getProperty("user.dir") + "/src/main/java";  // 代码输出路径
 
         // 需要生成的表
-        List<String> tables = Arrays.asList("users", "admin");
+        List<String> tables = Arrays.asList("public.users", "admin", "schedule", "consultant");
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> {

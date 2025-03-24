@@ -1,11 +1,19 @@
 package g06.ecnu.heartbridge.utils;
 
+import g06.ecnu.heartbridge.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * <p>
+ * Jwt工具类
+ * </p>
+ *
+ * @author Tennsai Minamoto
+ * @since 2025/3/12
+ */
 public class JwtUtil {
     private static final long EXPIRATION_TIME = 86400000; // 1 天
     private static final SecretKey key = Jwts.SIG.HS256.key().build();
@@ -21,7 +29,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 解析 JWT
+    // 解析并验证 JWT
     public static Claims parseToken(String token) {
         Claims claims;
         try {
@@ -30,29 +38,15 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
+            if (claims.getExpiration().before(new Date())){
+                throw new InvalidTokenException("Expired or invalid JWT token");
+            }
             return claims;
         }
         catch (Exception e) {
             System.err.println("Error parsing jwt: " + e.getMessage());
             e.printStackTrace();
             return null;
-        }
-    }
-
-    // 验证 JWT 是否有效
-    public static boolean validateToken(String token, String username, int userType) {
-        try {
-            Claims claims = parseToken(token);
-            if (claims != null) {
-                String tokenUsername = claims.getSubject();
-                int tokenUserType = claims.get("userType", int.class);
-                boolean isExpired = claims.getExpiration().before(new Date());
-                return (userType == tokenUserType) && (username.equals(tokenUsername) && !isExpired);
-            }
-            else return false;
-        }
-        catch (Exception e) {
-            return false;
         }
     }
 }
