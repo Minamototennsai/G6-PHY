@@ -1,10 +1,16 @@
 spring:
   datasource:
-    url: jdbc:h2:file:./data/testdb;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://118.31.60.32:3306
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: g06
+    password: g06
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: g06/ecnu/heartbridge/entity
