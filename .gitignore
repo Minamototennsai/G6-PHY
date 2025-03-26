@@ -1,7 +1,7 @@
 HELP.md
 target/
 data/
-**/application-dev.yml
+src/main/resources/application-dev.yml
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
