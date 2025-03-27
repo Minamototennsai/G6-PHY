@@ -30,7 +30,7 @@ public class JwtUtil {
     }
 
     // 解析并验证 JWT
-    public static Claims parseToken(String token) {
+    public static Claims validateToken(String token) {
         Claims claims;
         try {
             claims = Jwts.parser()
@@ -45,7 +45,6 @@ public class JwtUtil {
         }
         catch (Exception e) {
             System.err.println("Error parsing jwt: " + e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }

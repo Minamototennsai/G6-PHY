@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
         try {
-            String username = JwtUtil.parseToken(token).getSubject();
+            String username = JwtUtil.validateToken(token).getSubject();
             request.setAttribute("username", username);
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
