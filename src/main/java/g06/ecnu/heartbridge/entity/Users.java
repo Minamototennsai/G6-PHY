@@ -39,9 +39,9 @@ public class Users implements Serializable {
 
     private Object status;
 
-    private Object type;
+    private String type;
 
-    public Users(String username, String password, String phone, String email, int type) {
+    public Users(String username, String password, String phone, String email, String type) {
         this.username = username;
         this.password = password;
         this.phone = phone;

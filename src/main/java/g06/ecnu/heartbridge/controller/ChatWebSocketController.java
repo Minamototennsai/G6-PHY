@@ -19,7 +19,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
 public class ChatWebSocketController extends TextWebSocketHandler {
-    private ChatService chatService;
+    private final ChatService chatService;
 
     @Autowired
     public ChatWebSocketController(ChatService chatService) {

@@ -19,10 +19,11 @@ public class JwtUtil {
     private static final SecretKey key = Jwts.SIG.HS256.key().build();
 
     // 生成 JWT
-    public static String generateToken(String username, int userType) {
+    public static String generateToken(String username, String userType, int userId) {
         return Jwts.builder()
                 .subject(username)
                 .claim("userType", userType)
+                .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
