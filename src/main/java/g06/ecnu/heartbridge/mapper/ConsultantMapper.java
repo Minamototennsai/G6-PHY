@@ -54,7 +54,7 @@ public interface ConsultantMapper extends BaseMapper<Users> {
         JOIN tag t ON et.tag_id = t.id
         WHERE
             u.id != #{id}
-            AND t.id = (SELECT tag_id FROM expertise_tag WHERE user_id = CONTACT('%', #{id}, '%'))
+            AND t.id = (SELECT tag_id FROM expertise_tag WHERE user_id = #{id})
         GROUP BY u.id
     </script>
     """)
