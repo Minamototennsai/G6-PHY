@@ -6,8 +6,6 @@ import g06.ecnu.heartbridge.DTO.ConsultantTagDTO;
 import g06.ecnu.heartbridge.entity.Users;
 import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,8 +26,8 @@ public interface ConsultantMapper extends BaseMapper<Users> {
         JOIN expertise_tag et ON u.id = et.user_id
         JOIN tag t ON et.tag_id = t.id
         <if test="keyword != null and keyword != ''">
-            WHERE    
-                (u.username LIKE CONCAT('%', #{keyword}, '%') 
+            WHERE
+                (u.username LIKE CONCAT('%', #{keyword}, '%')
                 OR t.name LIKE CONCAT('%', #{keyword}, '%'))
         </if>
         GROUP BY u.id

@@ -1,7 +1,7 @@
 package g06.ecnu.heartbridge.config;
 
 import g06.ecnu.heartbridge.controller.ChatWebSocketController;
-import g06.ecnu.heartbridge.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -16,17 +16,18 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
  * @since 2025/3/29
  */
 @Configuration
-@EnableWebSocket // 启用 WebSocket 支持
+@EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final ChatWebSocketController chatWebSocketController;
 
+    @Autowired
     public WebSocketConfig(ChatWebSocketController chatWebSocketController) {this.chatWebSocketController = chatWebSocketController;}
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatWebSocketController, "/chat")
-                .setAllowedOrigins("*"); // 允许所有来源
+                .setAllowedOrigins("*");
 
     }
 }
