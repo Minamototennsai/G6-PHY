@@ -1,5 +1,6 @@
 package g06.ecnu.heartbridge.security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,8 +34,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
         try {
-            String username = JwtUtil.parseToken(token).getSubject();
+            Claims claim = JwtUtil.validateToken(token);
+            String username = claim.getSubject();
+            String userId = claim.get("userId", String.class);
             request.setAttribute("username", username);
+            request.setAttribute("userId", userId);
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;

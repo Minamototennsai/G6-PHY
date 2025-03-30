@@ -19,10 +19,11 @@ public class JwtUtil {
     private static final SecretKey key = Jwts.SIG.HS256.key().build();
 
     // 生成 JWT
-    public static String generateToken(String username, int userType) {
+    public static String generateToken(String username, String userType, int userId) {
         return Jwts.builder()
                 .subject(username)
                 .claim("userType", userType)
+                .claim("userId", userId)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
@@ -30,7 +31,7 @@ public class JwtUtil {
     }
 
     // 解析并验证 JWT
-    public static Claims parseToken(String token) {
+    public static Claims validateToken(String token) {
         Claims claims;
         try {
             claims = Jwts.parser()
@@ -45,7 +46,6 @@ public class JwtUtil {
         }
         catch (Exception e) {
             System.err.println("Error parsing jwt: " + e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }

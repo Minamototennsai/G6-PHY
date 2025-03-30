@@ -32,6 +32,7 @@ public class ScheduleService {
     @Resource
     private UsersMapper usersMapper;
 
+    //获取用户预约列表
     public ResponseEntity<Object> getSchedule(int clientId) {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
@@ -46,7 +47,8 @@ public class ScheduleService {
 
     }
 
-    public ResponseEntity<Object> saveSchedule(int consultantId, int clientId, String date, String time) {
+    //新增预约
+    public ResponseEntity<Object> addSchedule(int consultantId, int clientId, String date, String time) {
         LocalDate localDate;
         LocalTime localTime;
         try{
