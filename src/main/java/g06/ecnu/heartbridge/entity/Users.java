@@ -1,7 +1,10 @@
 package g06.ecnu.heartbridge.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.io.Serial;
 import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +21,14 @@ import lombok.Setter;
 @Setter
 public class Users implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
-    private String userName;
 
     @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
+    @TableField("username")
     private String username;
 
     private String password;
