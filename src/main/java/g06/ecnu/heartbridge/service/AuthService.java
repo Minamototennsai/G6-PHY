@@ -81,10 +81,10 @@ public class AuthService {
         }
         Users users = usersMapper.selectOne(queryWrapper);
         if (users != null && users.getPassword().equals(password)) {
-            String token = JwtUtil.generateToken(users.getUserName(), users.getType(), users.getId());
+            String token = JwtUtil.generateToken(users.getUsername(), users.getType(), users.getId());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
-            response.put("username", users.getUserName());
+            response.put("username", users.getUsername());
             response.put("id", String.valueOf(users.getId()));
             response.put("type", String.valueOf(users.getType()));
             return ResponseEntity.ok(response);
