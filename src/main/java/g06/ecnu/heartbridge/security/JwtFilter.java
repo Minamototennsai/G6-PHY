@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             Claims claim = JwtUtil.validateToken(token);
             String username = claim.getSubject();
-            String userId = claim.get("userId", String.class);
+            Integer userId = claim.get("userId", Integer.class);
             request.setAttribute("username", username);
             request.setAttribute("userId", userId);
         } catch (Exception e) {
