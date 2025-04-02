@@ -10,7 +10,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
+  task:
+    scheduling:
+      pool:
+        size: 5
 
 logging:
   level:

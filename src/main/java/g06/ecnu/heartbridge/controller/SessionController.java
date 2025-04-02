@@ -34,7 +34,7 @@ public class SessionController {
 
     @PostMapping("/sessions/{session_id}/end")
     public ResponseEntity<Object> closeSession(@PathVariable("session_id") int sessionId) {
-        return chatService.closeSession(sessionId);
+        return chatService.closeWebSocketSession(sessionId);
     }
 
     @GetMapping("/sessions")

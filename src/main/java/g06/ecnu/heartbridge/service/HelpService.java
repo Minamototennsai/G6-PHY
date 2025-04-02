@@ -26,6 +26,9 @@ public class HelpService {
     @Resource
     private HelpMapper helpMapper;
 
+    @Resource
+    private ChatService chatService;
+
     //获取求助
     public ResponseEntity<Object> getHelp(Integer helpId){
         List<Help> helps;
@@ -53,6 +56,19 @@ public class HelpService {
             return ResponseEntity.ok("{\"message\":\"创建求助成功\"}");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"创建求助失败\"}");
+        }
+    }
+
+    public ResponseEntity<Object> handleHelp(int helpId, int consultantId) {
+        QueryWrapper<Help> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", helpId);
+        Help help = helpMapper.selectOne(queryWrapper);
+        int sessionId = help.getSessionId();
+        int success = chatService.joinSession(consultantId, sessionId);
+        if (success == 0) {
+            return ResponseEntity.ok("{\"message\":\"成功加入咨询\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"加入咨询失败\"}");
         }
     }
 }

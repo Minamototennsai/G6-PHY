@@ -59,4 +59,9 @@ public class ConsultantController {
     public ResponseEntity<Object> getRecommendedConsultant(@RequestParam(required = false, defaultValue = "3") int count, @RequestAttribute("username") String username) {
         return consultantService.getRecommendedConsultants(username, count);
     }
+
+    @GetMapping("/consultants/{consultant_id}/availability")
+    public ResponseEntity<Object> getAvailability(@PathVariable("consultant_id") int consultant_id) {
+        return consultantService.getAvailability(consultant_id);
+    }
 }
