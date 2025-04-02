@@ -8,3 +8,6 @@ spring:
     url: jdbc:mysql://118.31.60.32:3306/phy_test
     username: g06
     password: g06
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
