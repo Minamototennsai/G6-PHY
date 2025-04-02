@@ -1,6 +1,9 @@
 package g06.ecnu.heartbridge.controller;
 
+import g06.ecnu.heartbridge.DTO.ArticleDTO;
+import g06.ecnu.heartbridge.DTO.ArticleDetailDTO;
 import g06.ecnu.heartbridge.DTO.ArticleSearchDTO;
+import g06.ecnu.heartbridge.pojo.Article;
 import g06.ecnu.heartbridge.service.ArticleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,5 +29,10 @@ public class ArticleController {
     @GetMapping("")
     public ResponseEntity<ArticleSearchDTO> searchArticles(@RequestParam(required = false) String keyword, @RequestParam(required = false) Integer page, @RequestParam(required = false) String[] tags, HttpSession session, HttpServletRequest request) {
         return articleService.searchArticles(keyword, page, tags, session,request);
+    }
+
+    @GetMapping("/{article_id}")
+    public ResponseEntity<ArticleDetailDTO> getArticleDetail(@PathVariable("article_id") int articleId, HttpServletRequest request) {
+        return articleService.getArticleDetail(articleId,request);
     }
 }

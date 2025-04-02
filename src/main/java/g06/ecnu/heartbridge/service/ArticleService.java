@@ -1,9 +1,12 @@
 package g06.ecnu.heartbridge.service;
 
 import g06.ecnu.heartbridge.DTO.ArticleDTO;
+import g06.ecnu.heartbridge.DTO.ArticleDetailDTO;
 import g06.ecnu.heartbridge.DTO.ArticleSearchDTO;
 import g06.ecnu.heartbridge.DTO.UserWithPreferAndArticleHistoryDTO;
 import g06.ecnu.heartbridge.cache.ArticleCache;
+import g06.ecnu.heartbridge.mapper.AfterReadArticleUpdateMapper;
+import g06.ecnu.heartbridge.mapper.ArticleDetailMapper;
 import g06.ecnu.heartbridge.mapper.ArticleSearchMapper;
 import g06.ecnu.heartbridge.mapper.UserArticleHistoryMapper;
 import g06.ecnu.heartbridge.pojo.Article;
@@ -31,6 +34,12 @@ public class ArticleService {
 
     @Autowired
     private UserArticleHistoryMapper userArticleHistoryMapper;
+
+    @Autowired
+    private ArticleDetailMapper articleDetailMapper;
+
+    @Autowired
+    private AfterReadArticleUpdateMapper afterReadArticleUpdateMapper;
 
     @Autowired
     private BeanFactory factory;
@@ -123,7 +132,7 @@ public class ArticleService {
         UserWithPreferAndArticleHistoryDTO dto;
         try{
             String jwt=request.getHeader("Authorization").substring(7);
-            int userId= Integer.parseInt(JwtUtil.validateToken(jwt).get("userId", String.class));
+            int userId= JwtUtil.validateToken(jwt).get("userId", Integer.class);
 
             dto=userArticleHistoryMapper.getRecord(userId);
         }catch (Exception e){
@@ -165,6 +174,7 @@ public class ArticleService {
         ArrayList<Article> articles1=new ArrayList<>();
         for(int i=(page-1)*10;i<page*10&&i<articles.size();i++){
             articles1.add(articles.get(i));
+            articles1.get(i).setPreview(articles1.get(i).getPreview().substring(0,30));
         }
         ArticleResponseData data=new ArticleResponseData();
         data.setArticles(articles1);
@@ -172,5 +182,17 @@ public class ArticleService {
         ArticleSearchDTO articleSearchDTO=new ArticleSearchDTO();
         articleSearchDTO.setData(data);
         return ResponseEntity.ok(articleSearchDTO);
+    }
+
+
+
+
+    public ResponseEntity<ArticleDetailDTO> getArticleDetail(int articleId, HttpServletRequest request){
+        String jwt=request.getHeader("Authorization").substring(7);
+        int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        ArticleDetailDTO dto=articleDetailMapper.getArticleDetailById(articleId);
+        afterReadArticleUpdateMapper.addOneViewInArticle(articleId);
+        afterReadArticleUpdateMapper.addReadLog(userId,articleId);
+        return ResponseEntity.ok(dto);
     }
 }
