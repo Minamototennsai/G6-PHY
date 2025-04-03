@@ -35,4 +35,9 @@ public class ArticleController {
     public ResponseEntity<ArticleDetailDTO> getArticleDetail(@PathVariable("article_id") int articleId, HttpServletRequest request) {
         return articleService.getArticleDetail(articleId,request);
     }
+
+    @GetMapping("/{article_id}/similar")
+    public ResponseEntity<ArticleSearchDTO> getSimilarArticles(@PathVariable("article_id") int articleId, HttpServletRequest request) {
+        return articleService.getSimilarArticles(articleId,request);
+    }
 }

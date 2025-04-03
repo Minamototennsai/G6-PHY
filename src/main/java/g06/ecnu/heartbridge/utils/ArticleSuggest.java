@@ -36,7 +36,7 @@ public class ArticleSuggest {
      */
     private double tagParam=10000.0;
     private double tagPreferParam=1.0;
-    private double tagHistoryParam=1.0;
+    private double tagHistoryParam=0.1;
     private double likeParam=10.0;
     private double viewParam=1.0;
     private double randomParam=1000.0;

@@ -21,7 +21,7 @@ public interface ArticleSearchMapper {
      */
     @Select("""
     <script>
-        select article_id,title,u.username as writer_name,content as preview,view_count,liked_count,create_time,tag.name as tag
+        select article_id,title,u.username as writer_name,substr(content,0,30) as preview,view_count,liked_count,create_time,tag.name as tag
         from ((articles as a join article_tag as t on a.id = t.article_id) join (select id,users.username from users) as u on u.id=a.writer_id) join tag on t.tag_id=tag.id
         <if test="articleIds.size()!=null and articleIds.size()!=0">
             where article_id in 
@@ -55,7 +55,7 @@ public interface ArticleSearchMapper {
      */
     @Select("""
     <script>
-        select article_id,title,u.username as writer_name,content as preview,view_count,liked_count,create_time,tag.name as tag
+        select article_id,title,u.username as writer_name,substr(content,0,30) as preview,view_count,liked_count,create_time,tag.name as tag
         from (((select * from articles
                      <if test="keyword!=null and keyword.length()>0">
                         where title like concat('%',#{keyword},'%')
