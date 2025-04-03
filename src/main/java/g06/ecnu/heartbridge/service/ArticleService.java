@@ -1,24 +1,21 @@
 package g06.ecnu.heartbridge.service;
 
-import g06.ecnu.heartbridge.DTO.ArticleDTO;
-import g06.ecnu.heartbridge.DTO.ArticleDetailDTO;
-import g06.ecnu.heartbridge.DTO.ArticleSearchDTO;
-import g06.ecnu.heartbridge.DTO.UserWithPreferAndArticleHistoryDTO;
+import g06.ecnu.heartbridge.DTO.*;
 import g06.ecnu.heartbridge.cache.ArticleCache;
-import g06.ecnu.heartbridge.mapper.AfterReadArticleUpdateMapper;
-import g06.ecnu.heartbridge.mapper.ArticleDetailMapper;
-import g06.ecnu.heartbridge.mapper.ArticleSearchMapper;
-import g06.ecnu.heartbridge.mapper.UserArticleHistoryMapper;
+import g06.ecnu.heartbridge.mapper.*;
 import g06.ecnu.heartbridge.pojo.Article;
 import g06.ecnu.heartbridge.pojo.ArticleResponseData;
+import g06.ecnu.heartbridge.pojo.CreateNewArticleResponse;
 import g06.ecnu.heartbridge.utils.ArticleSuggest;
 import g06.ecnu.heartbridge.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -40,6 +37,9 @@ public class ArticleService {
 
     @Autowired
     private AfterReadArticleUpdateMapper afterReadArticleUpdateMapper;
+
+    @Autowired
+    private ArticleChangeMapper articleChangeMapper;
 
     @Autowired
     private BeanFactory factory;
@@ -240,4 +240,34 @@ public class ArticleService {
         return ResponseEntity.ok(articleSearchDTO);
     }
 
+    /**
+     * 插入文章于数据库中
+     * @param title 文章标题
+     * @param content 正文
+     * @param tags 标签组
+     * @param request http请求
+     * @return http响应
+     */
+    @Transactional
+    public ResponseEntity<CreateNewArticleResponseDTO> createArticle(String title,String content,List<String>tags,HttpServletRequest request){
+        String jwt=request.getHeader("Authorization").substring(7);
+        int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        if(articleChangeMapper.checkId(userId)==0){
+            CreateNewArticleResponseDTO dto=new CreateNewArticleResponseDTO();
+            dto.setMessage("非咨询师正试图创建文章");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+        }else{
+            Article article=new Article();
+            articleChangeMapper.createNewArticle(title,content,userId,article);
+            int articleId=article.getArticle_id();
+            articleChangeMapper.insertArticleTags(articleId,tags);
+            CreateNewArticleResponseDTO dto=new CreateNewArticleResponseDTO();
+            dto.setMessage("成功");
+            CreateNewArticleResponse response=new CreateNewArticleResponse();
+            response.setArticle_id(articleId);
+            response.setCreate_time(articleDetailMapper.getArticleDetailById(articleId).getCreate_time());
+            dto.setData(response);
+            return ResponseEntity.ok(dto);
+        }
+    }
 }
