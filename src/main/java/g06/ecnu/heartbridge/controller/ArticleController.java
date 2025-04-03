@@ -42,4 +42,9 @@ public class ArticleController {
     public ResponseEntity<CreateNewArticleResponseDTO> createArticle(@RequestBody CreateArticleRequest createArticleRequest, HttpServletRequest request) {
         return articleService.createArticle(createArticleRequest.getTitle(),createArticleRequest.getContent(),createArticleRequest.getTags(),request);
     }
+
+    @DeleteMapping("/{article_id}")
+    public ResponseEntity<MessageDTO> deleteArticle(@PathVariable("article_id") int articleId) {
+        return articleService.deleteArticle(articleId);
+    }
 }

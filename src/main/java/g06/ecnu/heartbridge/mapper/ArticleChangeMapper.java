@@ -56,4 +56,16 @@ public interface ArticleChangeMapper {
         ),0)
     """)
     public Integer checkId(@Param("id") int id);
+
+    @Delete("""
+    delete from article_tag
+    where article_id=#{articleId}
+    """)
+    public void deleteAllArticleTagById(int articleId);
+
+    @Delete("""
+    delete from articles
+    where id=#{articleId}
+    """)
+    public void deleteArticle(int articleId);
 }

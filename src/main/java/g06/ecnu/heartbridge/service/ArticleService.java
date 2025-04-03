@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -269,5 +270,20 @@ public class ArticleService {
             dto.setData(response);
             return ResponseEntity.ok(dto);
         }
+    }
+
+    @Transactional
+    public ResponseEntity<MessageDTO> deleteArticle(int articleId){
+        try {
+            articleChangeMapper.deleteAllArticleTagById(articleId);
+            articleChangeMapper.deleteArticle(articleId);
+        }catch (Exception e){
+            MessageDTO dto=new MessageDTO();
+            dto.setMessage("文章id不存在");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+        }
+        MessageDTO dto=new MessageDTO();
+        dto.setMessage("操作成功");
+        return ResponseEntity.ok(dto);
     }
 }
