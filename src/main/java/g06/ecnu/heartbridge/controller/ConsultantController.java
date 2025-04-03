@@ -55,8 +55,5 @@ public class ConsultantController {
         return consultantService.getSimilarConsultant(consultant_id);
     }
 
-    @GetMapping("/consultants/recommended")
-    public ResponseEntity<Object> getRecommendedConsultant(@RequestParam(required = false, defaultValue = "3") int count, @RequestAttribute("username") String username) {
-        return consultantService.getRecommendedConsultants(username, count);
-    }
+
 }
