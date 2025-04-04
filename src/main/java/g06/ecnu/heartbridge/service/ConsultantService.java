@@ -14,7 +14,6 @@ import g06.ecnu.heartbridge.mapper.ConsultantMapper;
 import g06.ecnu.heartbridge.mapper.ScheduleMapper;
 import g06.ecnu.heartbridge.mapper.UsersMapper;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -140,12 +139,6 @@ public class ConsultantService {
         }
     }
 
-    //TODO:推荐咨询师
-    public ResponseEntity<Object> getRecommendedConsultants(String username, int count) {
-
-        return null;
-    }
-
     public ResponseEntity<Object> getAvailability(int consultantId) {
         QueryWrapper<ConsultantDetail> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", consultantId);
@@ -154,9 +147,8 @@ public class ConsultantService {
             String isFree = consultantDetail.getIsFree();
             ObjectNode response = new ObjectMapper().createObjectNode();
             ObjectNode data = new ObjectMapper().createObjectNode();
-            ObjectNode isAvailable = new ObjectMapper().createObjectNode();
-            isAvailable.put("isAvailable", isFree.equals("yes"));
-            data.set("isAvailable", isAvailable);
+            data.put("isAvailable", isFree.equals("yes"));
+            data.put("isOnline", chatService.ifUserOnline(consultantId));
             response.set("data", data);
             return ResponseEntity.ok(response);
         } else {

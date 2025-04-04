@@ -209,4 +209,8 @@ public class ChatService {
         }
         return false;
     }
+
+    public boolean ifUserOnline(int userId){
+        return sessionMapIdToSession.containsKey(userId);
+    }
 }

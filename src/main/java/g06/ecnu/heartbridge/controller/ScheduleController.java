@@ -23,8 +23,8 @@ public class ScheduleController {
     public ScheduleController(ScheduleService scheduleService) {this.scheduleService = scheduleService;}
 
     @GetMapping("/schedules")
-    public ResponseEntity<Object> getSchedule(@RequestParam int clientId){
-        return scheduleService.getSchedule(clientId);
+    public ResponseEntity<Object> getSchedule(@RequestParam int client_id){
+        return scheduleService.getSchedule(client_id);
     }
 
     @PostMapping("/schedules")

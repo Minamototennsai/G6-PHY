@@ -43,8 +43,10 @@ public class AuthService {
             if (!PatternValidator.validatePattern(phone).equals("PHONE")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"电话不合法\"}");
             }
-            if (!PatternValidator.validatePattern(username).equals("EMAIL")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"邮箱不合法\"}");
+            if (email == null || email.isEmpty()){
+                if (!PatternValidator.validatePattern(email).equals("EMAIL")) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"邮箱不合法\"}");
+                }
             }
             if (ifUserExists(username, phone, email)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"用户名或电话或邮箱已存在\"}");

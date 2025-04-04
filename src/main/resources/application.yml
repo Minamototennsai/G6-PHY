@@ -2,7 +2,7 @@ spring:
   application:
     name: heartbridge
   profiles:
-    active: dev,ltdz
+    active: ltdz
   jpa:
     hibernate:
       ddl-auto: update
