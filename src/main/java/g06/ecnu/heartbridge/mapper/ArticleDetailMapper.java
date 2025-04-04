@@ -31,7 +31,7 @@ public interface ArticleDetailMapper {
             @Result(column = "create_time",property = "create_time"),
             @Result(column = "view_count",property = "views_count"),
             @Result(column = "liked_count",property = "liked_count"),
-            @Result(column = "a_id",property = "tags",many = @Many(select = "g06.ecnu.heartbridge.mapper.ArticleDetailMapper.getAllTagByArticleId",fetchType = FetchType.LAZY))
+            @Result(column = "a_id",property = "tags",many = @Many(select = "g06.ecnu.heartbridge.mapper.ArticleDetailMapper.getAllTagByArticleId",fetchType = FetchType.EAGER))
     })
     public ArticleDetailDTO getArticleDetailById(@Param("id") int id);
 

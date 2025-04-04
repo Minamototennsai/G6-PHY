@@ -1,25 +1,23 @@
 package g06.ecnu.heartbridge.service;
 
-import g06.ecnu.heartbridge.DTO.ArticleDTO;
-import g06.ecnu.heartbridge.DTO.ArticleDetailDTO;
-import g06.ecnu.heartbridge.DTO.ArticleSearchDTO;
-import g06.ecnu.heartbridge.DTO.UserWithPreferAndArticleHistoryDTO;
+import g06.ecnu.heartbridge.DTO.*;
 import g06.ecnu.heartbridge.cache.ArticleCache;
-import g06.ecnu.heartbridge.mapper.AfterReadArticleUpdateMapper;
-import g06.ecnu.heartbridge.mapper.ArticleDetailMapper;
-import g06.ecnu.heartbridge.mapper.ArticleSearchMapper;
-import g06.ecnu.heartbridge.mapper.UserArticleHistoryMapper;
+import g06.ecnu.heartbridge.mapper.*;
 import g06.ecnu.heartbridge.pojo.Article;
 import g06.ecnu.heartbridge.pojo.ArticleResponseData;
+import g06.ecnu.heartbridge.pojo.CreateNewArticleResponse;
 import g06.ecnu.heartbridge.utils.ArticleSuggest;
 import g06.ecnu.heartbridge.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -40,6 +38,9 @@ public class ArticleService {
 
     @Autowired
     private AfterReadArticleUpdateMapper afterReadArticleUpdateMapper;
+
+    @Autowired
+    private ArticleChangeMapper articleChangeMapper;
 
     @Autowired
     private BeanFactory factory;
@@ -81,6 +82,22 @@ public class ArticleService {
             result.add(map.get(integer));
         }
         return result;
+    }
+
+    private ArticleSuggest initArticleSuggest(UserWithPreferAndArticleHistoryDTO dto){
+        ArticleSuggest suggest= factory.getBean(ArticleSuggest.class);
+        suggest.setPreferTags(new HashSet<>(dto.getPreferTags()));
+        HashMap<String,Integer>map=new HashMap<>();
+        for(int i=0;i<dto.getHistoryTags().size();i++){
+            String str=dto.getHistoryTags().get(i);
+            if(map.containsKey(str)){
+                map.put(str,map.get(str)+1);
+            }else {
+                map.put(str,1);
+            }
+        }
+        suggest.setHistory(map);
+        return suggest;
     }
 
     /**
@@ -141,28 +158,15 @@ public class ArticleService {
             dto.setHistoryTags(new ArrayList<>());
             dto.setUserId(0);
         }
-        ArticleSuggest suggest= factory.getBean(ArticleSuggest.class);
-        suggest.setPreferTags(new HashSet<>(dto.getPreferTags()));
-        HashMap<String,Integer>map=new HashMap<>();
-        for(int i=0;i<dto.getHistoryTags().size();i++){
-            String str=dto.getHistoryTags().get(i);
-            if(map.containsKey(str)){
-                map.put(str,map.get(str)+1);
-            }else {
-                map.put(str,1);
-            }
-        }
-        suggest.setHistory(map);
+        ArticleSuggest suggest=initArticleSuggest(dto);
         List<ArticleDTO>articleDTOS=articleSearchMapper.searchByKeyAndTag(keyword,tagArray);
         List<Article>articles=integrate(articleDTOS);
-        articles.sort((a,b)->{
-            if(suggest.getSuggestParam(a.getTags(),a.getLiked_count(),a.getViews_count())-suggest.getSuggestParam(b.getTags(),b.getLiked_count(),b.getViews_count())>0){
-                return -1;
-            }else if(suggest.getSuggestParam(a.getTags(),a.getLiked_count(),a.getViews_count())-suggest.getSuggestParam(b.getTags(),b.getLiked_count(),b.getViews_count())==0){
-                return 0;
-            }else {
-                return 1;
-            }
+        HashMap<Integer,Double>idToScore=new HashMap<>();
+        for(Article article:articles){
+            idToScore.put(article.getArticle_id(),suggest.getSuggestParam(article.getTags(),article.getLiked_count(),article.getViews_count()));
+        }
+        articles.sort((a,b)-> {
+            return Double.compare(idToScore.get(b.getArticle_id()),idToScore.get(a.getArticle_id()));
         });
         //将查询结果放进缓存
         ArrayList<Integer>ranks=new ArrayList<>();
@@ -174,7 +178,6 @@ public class ArticleService {
         ArrayList<Article> articles1=new ArrayList<>();
         for(int i=(page-1)*10;i<page*10&&i<articles.size();i++){
             articles1.add(articles.get(i));
-            articles1.get(i).setPreview(articles1.get(i).getPreview().substring(0,30));
         }
         ArticleResponseData data=new ArticleResponseData();
         data.setArticles(articles1);
@@ -185,14 +188,102 @@ public class ArticleService {
     }
 
 
-
-
+    /**
+     * 根据articleId查询细节的内容
+     * @param articleId 文章id
+     * @param request http请求
+     * @return 响应体
+     */
     public ResponseEntity<ArticleDetailDTO> getArticleDetail(int articleId, HttpServletRequest request){
         String jwt=request.getHeader("Authorization").substring(7);
         int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
         ArticleDetailDTO dto=articleDetailMapper.getArticleDetailById(articleId);
         afterReadArticleUpdateMapper.addOneViewInArticle(articleId);
         afterReadArticleUpdateMapper.addReadLog(userId,articleId);
+        return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * 根据articleId推送3篇相似的文章
+     * @param articleId 文章id
+     * @param request http请求
+     * @return 响应体
+     */
+    public ResponseEntity<ArticleSearchDTO> getSimilarArticles(int articleId, HttpServletRequest request){
+        String jwt=request.getHeader("Authorization").substring(7);
+        int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        UserWithPreferAndArticleHistoryDTO userDTO=userArticleHistoryMapper.getRecord(userId);
+        ArticleSuggest suggest=initArticleSuggest(userDTO);
+        ArrayList<String> tags=articleDetailMapper.getAllTagByArticleId(articleId);
+        suggest.setPreferTags(new HashSet<>(tags));
+        List<ArticleDTO>allArticleList=articleSearchMapper.searchByKeyAndTag(null,null);
+        ArrayList<Article>allArticles=integrate(allArticleList);
+        HashMap<Integer,Double>idToScore=new HashMap<>();
+        for(Article article:allArticles){
+            idToScore.put(article.getArticle_id(),suggest.getSuggestParam(article.getTags(),article.getLiked_count(),article.getViews_count()));
+        }
+        allArticles.sort((a,b)-> {
+            return Double.compare(idToScore.get(b.getArticle_id()),idToScore.get(a.getArticle_id()));
+        });
+        ArrayList<Article>suggestArticles=new ArrayList<>();
+        for (Article allArticle : allArticles) {
+            if (allArticle.getArticle_id() == articleId) {
+                continue;
+            }
+            suggestArticles.add(allArticle);
+            if (suggestArticles.size() == 3) break;
+        }
+        ArticleResponseData responseData=new ArticleResponseData();
+        responseData.setArticles(suggestArticles);
+        responseData.setTotal(suggestArticles.size());
+        ArticleSearchDTO articleSearchDTO=new ArticleSearchDTO();
+        articleSearchDTO.setData(responseData);
+        return ResponseEntity.ok(articleSearchDTO);
+    }
+
+    /**
+     * 插入文章于数据库中
+     * @param title 文章标题
+     * @param content 正文
+     * @param tags 标签组
+     * @param request http请求
+     * @return http响应
+     */
+    @Transactional
+    public ResponseEntity<CreateNewArticleResponseDTO> createArticle(String title,String content,List<String>tags,HttpServletRequest request){
+        String jwt=request.getHeader("Authorization").substring(7);
+        int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        if(articleChangeMapper.checkId(userId)==0){
+            CreateNewArticleResponseDTO dto=new CreateNewArticleResponseDTO();
+            dto.setMessage("非咨询师正试图创建文章");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+        }else{
+            Article article=new Article();
+            articleChangeMapper.createNewArticle(title,content,userId,article);
+            int articleId=article.getArticle_id();
+            articleChangeMapper.insertArticleTags(articleId,tags);
+            CreateNewArticleResponseDTO dto=new CreateNewArticleResponseDTO();
+            dto.setMessage("成功");
+            CreateNewArticleResponse response=new CreateNewArticleResponse();
+            response.setArticle_id(articleId);
+            response.setCreate_time(articleDetailMapper.getArticleDetailById(articleId).getCreate_time());
+            dto.setData(response);
+            return ResponseEntity.ok(dto);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<MessageDTO> deleteArticle(int articleId){
+        try {
+            articleChangeMapper.deleteAllArticleTagById(articleId);
+            articleChangeMapper.deleteArticle(articleId);
+        }catch (Exception e){
+            MessageDTO dto=new MessageDTO();
+            dto.setMessage("文章id不存在");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(dto);
+        }
+        MessageDTO dto=new MessageDTO();
+        dto.setMessage("操作成功");
         return ResponseEntity.ok(dto);
     }
 }

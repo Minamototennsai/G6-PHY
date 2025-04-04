@@ -1,8 +1,6 @@
 package g06.ecnu.heartbridge.controller;
 
-import g06.ecnu.heartbridge.DTO.ArticleDTO;
-import g06.ecnu.heartbridge.DTO.ArticleDetailDTO;
-import g06.ecnu.heartbridge.DTO.ArticleSearchDTO;
+import g06.ecnu.heartbridge.DTO.*;
 import g06.ecnu.heartbridge.pojo.Article;
 import g06.ecnu.heartbridge.service.ArticleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +8,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 文章功能控制器
@@ -34,5 +31,20 @@ public class ArticleController {
     @GetMapping("/{article_id}")
     public ResponseEntity<ArticleDetailDTO> getArticleDetail(@PathVariable("article_id") int articleId, HttpServletRequest request) {
         return articleService.getArticleDetail(articleId,request);
+    }
+
+    @GetMapping("/{article_id}/similar")
+    public ResponseEntity<ArticleSearchDTO> getSimilarArticles(@PathVariable("article_id") int articleId, HttpServletRequest request) {
+        return articleService.getSimilarArticles(articleId,request);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<CreateNewArticleResponseDTO> createArticle(@RequestBody CreateArticleRequest createArticleRequest, HttpServletRequest request) {
+        return articleService.createArticle(createArticleRequest.getTitle(),createArticleRequest.getContent(),createArticleRequest.getTags(),request);
+    }
+
+    @DeleteMapping("/{article_id}")
+    public ResponseEntity<MessageDTO> deleteArticle(@PathVariable("article_id") int articleId) {
+        return articleService.deleteArticle(articleId);
     }
 }
