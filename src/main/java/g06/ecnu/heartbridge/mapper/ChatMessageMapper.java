@@ -1,6 +1,6 @@
 package g06.ecnu.heartbridge.mapper;
 
-import g06.ecnu.heartbridge.DTO.MessageDTO;
+import g06.ecnu.heartbridge.DTO.MessageHistoryDTO;
 import g06.ecnu.heartbridge.entity.ChatMessage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,5 +25,5 @@ public interface ChatMessageMapper extends BaseMapper<ChatMessage> {
         JOIN users u ON u.id = c.sender_id
         WHERE c.session_id = #{sessionId}
     """)
-    List<MessageDTO> getMessagesBySessionId(@Param("sessionId") int sessionId);
+    List<MessageHistoryDTO> getMessagesBySessionId(@Param("sessionId") int sessionId);
 }

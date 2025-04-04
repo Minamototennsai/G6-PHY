@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @since 2025/4/3
  */
 @Data
-public class MessageDTO {
+public class MessageHistoryDTO {
     private int msg_id;
     private int sender_id;
     private String sender_name;

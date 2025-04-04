@@ -1,6 +1,6 @@
 package g06.ecnu.heartbridge.service;
 
-import g06.ecnu.heartbridge.DTO.MessageDTO;
+import g06.ecnu.heartbridge.DTO.MessageHistoryDTO;
 import g06.ecnu.heartbridge.DTO.SessionListDTO;
 import g06.ecnu.heartbridge.mapper.ChatMessageMapper;
 import g06.ecnu.heartbridge.mapper.SessionsMapper;
@@ -44,7 +44,7 @@ public class SessionService {
 
     public ResponseEntity<Object> getMessages(int sessionId) {
         Map<String, Object> response = new HashMap<>();
-        List<MessageDTO> data = chatMessageMapper.getMessagesBySessionId(sessionId);
+        List<MessageHistoryDTO> data = chatMessageMapper.getMessagesBySessionId(sessionId);
         if (!data.isEmpty()) {
             response.put("data", data);
             return ResponseEntity.ok(response);
