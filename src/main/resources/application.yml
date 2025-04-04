@@ -2,7 +2,7 @@ spring:
   application:
     name: heartbridge
   profiles:
-    active: dev,ltdz
+    active: ltdz
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,7 +10,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-
+  task:
+    scheduling:
+      pool:
+        size: 5
 
 logging:
   level:

@@ -43,10 +43,12 @@ public class AuthService {
             if (!PatternValidator.validatePattern(phone).equals("PHONE")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"电话不合法\"}");
             }
-            if (!PatternValidator.validatePattern(username).equals("EMAIL")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"邮箱不合法\"}");
+            if (email == null || email.isEmpty()){
+                if (!PatternValidator.validatePattern(email).equals("EMAIL")) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"邮箱不合法\"}");
+                }
             }
-            if (usersMapper.ifUserExists(username, phone, email)) {
+            if (ifUserExists(username, phone, email)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"用户名或电话或邮箱已存在\"}");
             } else {
                 String userType = "client";
@@ -106,5 +108,13 @@ public class AuthService {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"用户名或密码错误\"}");
         }
+    }
+
+    private boolean ifUserExists(String username, String phone, String email) {
+        QueryWrapper<Users> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username)
+                .or().eq("phone", phone)
+                .or().eq("email", email);
+        return usersMapper.selectCount(wrapper) > 0;
     }
 }

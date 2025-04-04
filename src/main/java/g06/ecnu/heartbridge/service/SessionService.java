@@ -1,9 +1,11 @@
 package g06.ecnu.heartbridge.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import g06.ecnu.heartbridge.entity.ChatMessage;
+import g06.ecnu.heartbridge.DTO.MessageHistoryDTO;
+import g06.ecnu.heartbridge.DTO.SessionListDTO;
 import g06.ecnu.heartbridge.mapper.ChatMessageMapper;
+import g06.ecnu.heartbridge.mapper.SessionsMapper;
 import jakarta.annotation.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +26,32 @@ public class SessionService {
     @Resource
     private ChatMessageMapper chatMessageMapper;
 
+    @Resource
+    private SessionsMapper sessionsMapper;
+
     public ResponseEntity<Object> getSessions(int userId, String userType) {
-        //TODO: 会话详情
-        return null;
+        Map<String, Object> response = new HashMap<>();
+        List<SessionListDTO> data = sessionsMapper.getSessionsByUserId(userId, userType);
+        if (!data.isEmpty()) {
+            response.put("data", data);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "未获取到相关会话");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
     }
 
     public ResponseEntity<Object> getMessages(int sessionId) {
-        //TODO: 修改为DTO，现在与接口不匹配
-        QueryWrapper<ChatMessage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("session_id", sessionId);
-        List<ChatMessage> data = chatMessageMapper.selectList(queryWrapper);
         Map<String, Object> response = new HashMap<>();
-        response.put("data", data);
-        return ResponseEntity.ok(response);
+        List<MessageHistoryDTO> data = chatMessageMapper.getMessagesBySessionId(sessionId);
+        if (!data.isEmpty()) {
+            response.put("data", data);
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "未获取到聊天记录");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
     }
 }

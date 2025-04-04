@@ -4,10 +4,7 @@ import g06.ecnu.heartbridge.service.HelpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -36,5 +33,10 @@ public class HelpController {
     @PostMapping("/help")
     public ResponseEntity<Object> addHelp(@RequestParam int consultantId, @RequestParam int sessionId, @RequestParam String content){
         return helpService.addHelp(consultantId, sessionId, content);
+    }
+
+    @PostMapping("/help/{help_id}")
+    public ResponseEntity<Object> handleHelp(@PathVariable int help_id, @RequestAttribute("userId") int consultantId){
+        return helpService.handleHelp(help_id, consultantId);
     }
 }

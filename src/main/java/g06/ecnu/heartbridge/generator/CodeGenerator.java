@@ -11,13 +11,13 @@ import java.util.List;
 
 public class CodeGenerator {
     public static void main(String[] args) {
-        String url = "jdbc:h2:file:./data/testdb";
-        String username = "sa";  // 数据库用户名
-        String password = "";  // 数据库密码
+        String url = "jdbc:mysql://118.31.60.32:3306/phy_test";
+        String username = "g06";  // 数据库用户名
+        String password = "g06";  // 数据库密码
         String outputDir = System.getProperty("user.dir") + "/src/main/java";  // 代码输出路径
 
         // 需要生成的表
-        List<String> tables = Arrays.asList("chat_message");
+        List<String> tables = Arrays.asList("consultant_detail");
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> {

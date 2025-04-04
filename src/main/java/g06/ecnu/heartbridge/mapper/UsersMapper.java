@@ -18,11 +18,5 @@ import java.util.List;
  */
 @Mapper
 public interface UsersMapper extends BaseMapper<Users> {
-    default boolean ifUserExists(String username, String phone, String email) {
-        QueryWrapper<Users> wrapper = new QueryWrapper<>();
-        wrapper.eq("username", username)
-                .or().eq("phone", phone)
-                .or().eq("email", email);
-        return selectCount(wrapper) > 0;
-    }
+
 }

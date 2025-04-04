@@ -69,7 +69,7 @@ public class ChatService {
             sessionMapIdToSession.put(userId, webSocketSession);
             sessionMapSessionToId.put(webSocketSession, userId);
         } catch (Exception e) {
-            closeSession(webSocketSession);
+            closeWebSocketSession(webSocketSession);
         }
     }
 
@@ -127,7 +127,7 @@ public class ChatService {
         }
     }
 
-    public void closeSession(WebSocketSession webSocketSession){
+    public void closeWebSocketSession(WebSocketSession webSocketSession){
         try {
             webSocketSession.close(CloseStatus.NORMAL);
         } catch (Exception ignored) {}
@@ -165,7 +165,7 @@ public class ChatService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public ResponseEntity<Object> closeSession(int sessionId){
+    public ResponseEntity<Object> closeWebSocketSession(int sessionId){
         UpdateWrapper<Sessions> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("session_id", sessionId)
                 .set("isOvertime", "yes")
@@ -177,5 +177,40 @@ public class ChatService {
             sessions.remove(sessionId);
             return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"咨询已结束\"}");
         }
+    }
+
+    public int joinSession(int consultantId, int sessionId){
+        QueryWrapper<UserSession> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("session_id", sessionId);
+        UserSession userSession = userSessionMapper.selectOne(queryWrapper);
+        if(userSession != null){
+            int clientId = userSession.getClientId();
+            UserSession newUserSession = new UserSession();
+            newUserSession.setConsultantId(consultantId);
+            newUserSession.setSessionId(sessionId);
+            newUserSession.setClientId(clientId);
+            int result = userSessionMapper.insert(newUserSession);
+            if(result == 1){
+                sessions.get(sessionId).add(consultantId);
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
+        }
+    }
+
+    public boolean ifUserInSession(int userId){
+        for (CopyOnWriteArraySet<Integer> list : sessions.values()) {
+            if (list.contains(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean ifUserOnline(int userId){
+        return sessionMapIdToSession.containsKey(userId);
     }
 }

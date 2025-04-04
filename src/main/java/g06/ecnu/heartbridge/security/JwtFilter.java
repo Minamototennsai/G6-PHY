@@ -7,11 +7,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import g06.ecnu.heartbridge.utils.JwtUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * <p>
@@ -39,6 +42,10 @@ public class JwtFilter extends OncePerRequestFilter {
             Integer userId = claim.get("userId", Integer.class);
             request.setAttribute("username", username);
             request.setAttribute("userId", userId);
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
