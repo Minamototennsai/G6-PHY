@@ -34,7 +34,7 @@ public class SessionController {
 
     @PostMapping("/sessions/{session_id}/end")
     public ResponseEntity<Object> closeSession(@PathVariable("session_id") int sessionId) {
-        return chatService.closeWebSocketSession(sessionId);
+        return chatService.closeSession(sessionId);
     }
 
     @GetMapping("/sessions")
@@ -45,5 +45,10 @@ public class SessionController {
     @GetMapping("/sessions/{session_id}/messages")
     public ResponseEntity<Object> getMessages(@PathVariable("session_id") int sessionId) {
         return sessionService.getMessages(sessionId);
+    }
+
+    @PostMapping("/sessions/{session_id}/evaluation")
+    public ResponseEntity<Object> evaluate(@PathVariable("session_id") int sessionId, @RequestParam int consultant_id, @RequestParam int score) {
+        return chatService.evaluate(sessionId, consultant_id, score);
     }
 }
