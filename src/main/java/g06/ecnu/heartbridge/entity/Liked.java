@@ -2,10 +2,10 @@ package g06.ecnu.heartbridge.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,24 +15,23 @@ import lombok.Setter;
  * </p>
  *
  * @author Tennsai Minamoto
- * @since 2025-03-30
+ * @since 2025-04-08
  */
 @Getter
 @Setter
-@TableName("USER_SESSION")
-public class UserSession implements Serializable {
+public class Liked implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "ID", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private Integer sessionId;
+    private Integer userId;
 
-    private Integer clientId;
+    private String type;
 
-    private Integer consultantId;
+    private Integer targetId;
 
-    private Integer isEvaluated;
+    private LocalDateTime createTime;
 }

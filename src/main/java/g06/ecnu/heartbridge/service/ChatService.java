@@ -6,10 +6,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import g06.ecnu.heartbridge.entity.ChatMessage;
-import g06.ecnu.heartbridge.entity.Sessions;
-import g06.ecnu.heartbridge.entity.UserSession;
+import g06.ecnu.heartbridge.entity.*;
 import g06.ecnu.heartbridge.mapper.ChatMessageMapper;
+import g06.ecnu.heartbridge.mapper.ConsultantDetailMapper;
 import g06.ecnu.heartbridge.mapper.SessionsMapper;
 import g06.ecnu.heartbridge.mapper.UserSessionMapper;
 import g06.ecnu.heartbridge.utils.JwtUtil;
@@ -51,15 +50,14 @@ public class ChatService {
     @Resource
     private ChatMessageMapper chatMessageMapper;
 
-    private final ObjectMapper objectMapper;
+    @Resource
+    private ConsultantDetailMapper consultantDetailMapper;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<Integer, CopyOnWriteArraySet<Integer>> sessions = new ConcurrentHashMap<>();
     private final Map<Integer, WebSocketSession> sessionMapIdToSession = new ConcurrentHashMap<>();
     private final Map<WebSocketSession, Integer> sessionMapSessionToId = new ConcurrentHashMap<>();
     private final Map<WebSocketSession, Lock> sessionLocks = new ConcurrentHashMap<>();
-
-    public ChatService(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     public void onConnect(WebSocketSession webSocketSession){
         try {
@@ -165,10 +163,10 @@ public class ChatService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    public ResponseEntity<Object> closeWebSocketSession(int sessionId){
+    public ResponseEntity<Object> closeSession(int sessionId){
         UpdateWrapper<Sessions> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("session_id", sessionId)
-                .set("isOvertime", "yes")
+                .set("is_overtime", "yes")
                 .set("end_time", LocalDateTime.now());
         int result = sessionsMapper.update(updateWrapper);
         if(result == 0){
@@ -176,6 +174,42 @@ public class ChatService {
         } else {
             sessions.remove(sessionId);
             return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"咨询已结束\"}");
+        }
+    }
+
+
+    public ResponseEntity<Object> evaluate(int sessionId, int consultantId, int score){
+        QueryWrapper<ConsultantDetail> consultantDetailQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserSession> userSessionQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
+        sessionQueryWrapper.eq("session_id", sessionId);
+        Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
+        if (session == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"会话不存在\"}");
+        } else if (session.getIsOvertime().equals("no")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"咨询尚未结束，无法评价\"}");
+        }
+        userSessionQueryWrapper.eq("session_id", sessionId)
+                        .eq("consultant_id", consultantId);
+        UserSession userSession = userSessionMapper.selectOne(userSessionQueryWrapper);
+        if (userSession == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"咨询师id输入错误\"}");
+        } else if (userSession.getIsEvaluated() == 1) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"已经评价过，请勿重复评价\"}");
+        }
+        consultantDetailQueryWrapper.eq("user_id", consultantId);
+        UpdateWrapper<ConsultantDetail> consultantDetailUpdateWrapper = new UpdateWrapper<>();
+        ConsultantDetail consultantDetail = consultantDetailMapper.selectOne(consultantDetailQueryWrapper);
+        double currentScore = consultantDetail.getAvgScore();
+        int currentEvaluationCount = consultantDetail.getEvaluationCount();
+        consultantDetailUpdateWrapper.eq("user_id", consultantId)
+                .set("score", (currentScore * currentEvaluationCount + score)/(currentScore+1))
+                .set("evaluation_count", currentEvaluationCount + 1);
+        int result = consultantDetailMapper.update(consultantDetailUpdateWrapper);
+        if(result == 0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"数据库错误，请稍后再试\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"评价成功\"}");
         }
     }
 
