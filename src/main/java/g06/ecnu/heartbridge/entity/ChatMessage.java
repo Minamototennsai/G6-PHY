@@ -2,11 +2,12 @@ package g06.ecnu.heartbridge.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +21,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("CHAT_MESSAGE")
 public class ChatMessage implements Serializable {
 
     @Serial
@@ -29,11 +29,14 @@ public class ChatMessage implements Serializable {
     @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
+    @JsonProperty("session_id")
     private Integer sessionId;
 
+    @JsonProperty("sender_id")
     private Integer senderId;
 
     private String content;
 
+    @JsonProperty("send_time")
     private LocalDateTime sendTime;
 }

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,9 +33,12 @@ public class Forum implements Serializable {
 
     private String content;
 
+    @JsonProperty("creator_id")
     private Integer creatorId;
 
+    @JsonProperty("create_time")
     private LocalDateTime createTime;
 
+    @JsonProperty("update_time")
     private LocalDateTime updateTime;
 }

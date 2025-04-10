@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,11 +29,14 @@ public class Liked implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @JsonProperty("user_id")
     private Integer userId;
 
     private String type;
 
+    @JsonProperty("target_id")
     private Integer targetId;
 
+    @JsonProperty("create_time")
     private LocalDateTime createTime;
 }

@@ -28,7 +28,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/schedules")
-    public ResponseEntity<Object> addSchedule(@RequestParam int consultantId, @RequestParam int clientId, @RequestParam String date, @RequestParam String time) {
-        return scheduleService.addSchedule(consultantId, clientId, date, time);
+    public ResponseEntity<Object> addSchedule(@RequestParam int consultant_id, @RequestParam int client_id, @RequestParam String date, @RequestParam String time) {
+        return scheduleService.addSchedule(consultant_id, client_id, date, time);
     }
 }

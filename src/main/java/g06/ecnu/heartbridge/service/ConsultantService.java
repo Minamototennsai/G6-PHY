@@ -73,10 +73,23 @@ public class ConsultantService {
         }
     }
 
+    public ResponseEntity<Object> setConsultantBusy(int id, boolean busy) {
+        UpdateWrapper<ConsultantDetail> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", id)
+                .set("is_free", busy?"yes":"no");
+        int result = consultantDetailMapper.update(updateWrapper);
+        if (result == 1) {
+            return ResponseEntity.ok().body("{\"message\":\"修改成功\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"修改失败\"}");
+        }
+
+    }
+
     //处理预约
-    public ResponseEntity<Object> handleSchedule(int scheduleId, int agree) {
+    public ResponseEntity<Object> handleSchedule(int scheduleId, String agree) {
         UpdateWrapper<Schedule> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("schedule_id", scheduleId).set("agree", agree);
+        updateWrapper.eq("id", scheduleId).set("agree", agree);
         if (scheduleMapper.update(updateWrapper) > 0){
             return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"修改成功\"}");
         } else {
@@ -159,7 +172,7 @@ public class ConsultantService {
     //将schedule的格式为0-47的可用时间转为HH:mm格式
     private static List<String> convertAvailableTimes(List<Schedule> schedules) {
         List<String> availableTimes = new ArrayList<>();
-        for (int i = 0; i < 47; i++){
+        for (int i = 0; i < 48; i++){
             availableTimes.add(String.valueOf(i));
         }
         if (!schedules.isEmpty()) {
@@ -169,7 +182,7 @@ public class ConsultantService {
         }
         List<String> availableTimesConverted = new ArrayList<>();
         for (String time : availableTimes) {
-            availableTimesConverted.add(String.format("%s:%s", Integer.getInteger(time)/2, (Integer.getInteger(time)%2)==0?"00":"30" ));
+            availableTimesConverted.add(String.format("%s:%s", Integer.parseInt(time)/2, (Integer.parseInt(time)%2)==0?"00":"30" ));
         }
         return availableTimesConverted;
     }

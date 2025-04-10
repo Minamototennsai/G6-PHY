@@ -1,5 +1,6 @@
 package g06.ecnu.heartbridge.controller;
 
+import g06.ecnu.heartbridge.pojo.CommentRequestBody;
 import g06.ecnu.heartbridge.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<Object> addComment(@RequestParam int type, @RequestParam int target_id, @RequestParam String content, @RequestAttribute("userId") int userId) {
-        return commentService.addComment(type, target_id, content, userId);
+    public ResponseEntity<Object> addComment(@RequestBody CommentRequestBody commentRequestBody, @RequestAttribute("userId") int userId) {
+        return commentService.addComment(commentRequestBody.getType(), commentRequestBody.getTarget_id(), commentRequestBody.getContent(), userId);
     }
 
     @DeleteMapping("/comments/{comment_id}")
@@ -39,7 +40,7 @@ public class CommentController {
         return commentService.getArticleComments(article_id, userId, page, pageSize);
     }
 
-    @GetMapping("/articles/{forums_id}/comments")
+    @GetMapping("/forums/{forums_id}/comments")
     public ResponseEntity<Object> getForumComments(@PathVariable int forums_id, @RequestAttribute("userId") int userId, @RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "10") int pageSize) {
         return commentService.getForumComments(forums_id, userId, page, pageSize);
     }
