@@ -1,7 +1,6 @@
 package g06.ecnu.heartbridge.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -149,7 +148,7 @@ public class CommentService {
         queryWrapper.eq("comment_type", "article")
                 .eq("target_id", articleId)
                 .orderByAsc("create_time");
-        IPage<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
+        Page<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
 
         ObjectNode response = objectMapper.createObjectNode();
         ObjectNode dataNode = objectMapper.createObjectNode();
@@ -219,7 +218,7 @@ public class CommentService {
         queryWrapper.eq("comment_type", "forum")
                 .eq("target_id", forumId)
                 .orderByAsc("create_time");
-        IPage<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
+        Page<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
 
         ObjectNode response = objectMapper.createObjectNode();
         ObjectNode dataNode = objectMapper.createObjectNode();
