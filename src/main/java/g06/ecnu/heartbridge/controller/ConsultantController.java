@@ -36,7 +36,7 @@ public class ConsultantController {
     }
 
     @PostMapping("/schedules/{schedule_id}")
-    public ResponseEntity<Object> handleSchedule(@PathVariable("schedule_id") int schedule_id, @RequestParam int agree) {
+    public ResponseEntity<Object> handleSchedule(@PathVariable("schedule_id") int schedule_id, @RequestParam String agree) {
         return consultantService.handleSchedule(schedule_id, agree);
     }
 
@@ -55,5 +55,13 @@ public class ConsultantController {
         return consultantService.getSimilarConsultant(consultant_id);
     }
 
+    @PostMapping("/consultants/{id}/status")
+    public ResponseEntity<Object> setConsultantBusy(@PathVariable("id") int id, @RequestParam boolean isAvailable) {
+        return consultantService.setConsultantBusy(id, isAvailable);
+    }
 
+    @GetMapping("/consultants/{consultant_id}/availability")
+    public ResponseEntity<Object> getAvailability(@PathVariable("consultant_id") int consultant_id) {
+        return consultantService.getAvailability(consultant_id);
+    }
 }

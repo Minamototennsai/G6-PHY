@@ -1,20 +1,14 @@
 package g06.ecnu.heartbridge.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import g06.ecnu.heartbridge.entity.Articles;
-import g06.ecnu.heartbridge.entity.Comment;
-import g06.ecnu.heartbridge.entity.Forum;
-import g06.ecnu.heartbridge.entity.Liked;
-import g06.ecnu.heartbridge.mapper.ArticlesMapper;
-import g06.ecnu.heartbridge.mapper.CommentMapper;
-import g06.ecnu.heartbridge.mapper.ForumMapper;
-import g06.ecnu.heartbridge.mapper.LikedMapper;
+import g06.ecnu.heartbridge.entity.*;
+import g06.ecnu.heartbridge.mapper.*;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,6 +37,8 @@ public class CommentService {
     private ForumMapper forumMapper;
     @Resource
     private LikedMapper likedMapper;
+    @Autowired
+    private UsersMapper usersMapper;
 
     public ResponseEntity<Object> addComment(int type, int targetId, String content, int userId) {
         switch (type) {
@@ -152,11 +148,11 @@ public class CommentService {
         queryWrapper.eq("comment_type", "article")
                 .eq("target_id", articleId)
                 .orderByAsc("create_time");
-        IPage<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
+        Page<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
 
         ObjectNode response = objectMapper.createObjectNode();
         ObjectNode dataNode = objectMapper.createObjectNode();
-        dataNode.put("total", (int) comments.getTotal());
+        dataNode.put("total", comments.getTotal());
 
         List<JsonNode> commentList = new ArrayList<>();
         for (Comment comment : comments.getRecords()) {
@@ -183,6 +179,10 @@ public class CommentService {
         ObjectNode commentNode = objectMapper.createObjectNode();
         commentNode.put("id", comment.getId());
         commentNode.put("user_id", comment.getUserId());
+        QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", userId);
+        Users user = usersMapper.selectOne(queryWrapper);
+        commentNode.put("user_name", user.getUsername());
         commentNode.put("content", comment.getContent());
         commentNode.put("time", comment.getCreateTime().toString());
         commentNode.put("liked_count", comment.getLikedCount());
@@ -218,11 +218,11 @@ public class CommentService {
         queryWrapper.eq("comment_type", "forum")
                 .eq("target_id", forumId)
                 .orderByAsc("create_time");
-        IPage<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
+        Page<Comment> comments = commentMapper.selectPage(commentPage, queryWrapper);
 
         ObjectNode response = objectMapper.createObjectNode();
         ObjectNode dataNode = objectMapper.createObjectNode();
-        dataNode.put("total", (int) comments.getTotal());
+        dataNode.put("total", comments.getTotal());
 
         List<JsonNode> commentList = new ArrayList<>();
         for (Comment comment : comments.getRecords()) {

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serial;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +41,7 @@ public class Users implements Serializable {
 
     private String profile;
 
+    @JsonProperty("theme_preference")
     private String themePreference;
 
     private Object status;

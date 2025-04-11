@@ -5,9 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,11 +14,11 @@ import lombok.Setter;
  * </p>
  *
  * @author Tennsai Minamoto
- * @since 2025-04-08
+ * @since 2025-04-10
  */
 @Getter
 @Setter
-public class Forum implements Serializable {
+public class Tag implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,16 +26,5 @@ public class Forum implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private String title;
-
-    private String content;
-
-    @JsonProperty("creator_id")
-    private Integer creatorId;
-
-    @JsonProperty("create_time")
-    private LocalDateTime createTime;
-
-    @JsonProperty("update_time")
-    private LocalDateTime updateTime;
+    private String name;
 }

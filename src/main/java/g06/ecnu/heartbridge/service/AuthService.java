@@ -59,6 +59,9 @@ public class AuthService {
                     int userId = user.getId();
                     String token = JwtUtil.generateToken(username, userType, userId);
                     Map<String, String> response = new HashMap<>();
+                    response.put("id", String.valueOf(userId));
+                    response.put("username", username);
+                    response.put("type", "0");
                     response.put("token", token);
 
                     if (result > 0) {
@@ -82,6 +85,9 @@ public class AuthService {
                     int userId = user.getId();
                     String token = JwtUtil.generateToken(username, userType, userId);
                     Map<String, String> response = new HashMap<>();
+                    response.put("id", String.valueOf(userId));
+                    response.put("username", username);
+                    response.put("type", "1");
                     response.put("token", token);
 
                     if (userInsertResult > 0 && consultantDetailInsertResult > 0) {
@@ -124,8 +130,19 @@ public class AuthService {
         if (user != null && user.getPassword().equals(password)) {
             if (user.getStatus().equals("inactive"))
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"您已被管理员封禁\"}");
+            if (role == 0) {
+                QueryWrapper<ConsultantDetail> consultantDetailQueryWrapper = new QueryWrapper<>();
+                consultantDetailQueryWrapper.eq("user_id", user.getId());
+                ConsultantDetail consultantDetail = consultantDetailMapper.selectOne(consultantDetailQueryWrapper);
+                if (consultantDetail.getCertification().equals("no")) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"您的资格审查尚未通过，无法登录\"}");
+                }
+            }
             String token = JwtUtil.generateToken(user.getUsername(), user.getType(), user.getId());
             Map<String, String> response = new HashMap<>();
+            response.put("id", String.valueOf(user.getId()));
+            response.put("username", user.getUsername());
+            response.put("type", user.getType());
             response.put("token", token);
             return ResponseEntity.ok(response);
         } else {

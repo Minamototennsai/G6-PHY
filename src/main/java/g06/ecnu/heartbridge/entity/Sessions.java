@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,11 +29,15 @@ public class Sessions implements Serializable {
     @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
+    @JsonProperty("schedule_id")
     private Integer scheduleId;
 
+    @JsonProperty("start_time")
     private LocalDateTime startTime;
 
+    @JsonProperty("end_time")
     private LocalDateTime endTime;
 
+    @JsonProperty("is_overtime")
     private String isOvertime;
 }

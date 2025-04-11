@@ -5,9 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,26 +14,21 @@ import lombok.Setter;
  * </p>
  *
  * @author Tennsai Minamoto
- * @since 2025-03-30
+ * @since 2025-04-10
  */
 @Getter
 @Setter
-public class ChatMessage implements Serializable {
+public class Report implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "ID", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @JsonProperty("session_id")
-    private Integer sessionId;
-
-    @JsonProperty("sender_id")
     private Integer senderId;
 
-    private String content;
+    private String type;
 
-    @JsonProperty("send_time")
-    private LocalDateTime sendTime;
+    private Integer targetId;
 }

@@ -79,7 +79,7 @@ public class ChatService {
             QueryWrapper<Sessions> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", destSession);
             Long ifSessionExist = sessionsMapper.selectCount(queryWrapper);
-            if (ifSessionExist == 0){
+            if (ifSessionExist == 0) {
                 throw new NullPointerException();
             }
             ChatMessage chatMessage = new ChatMessage();
@@ -99,7 +99,7 @@ public class ChatService {
         } catch (JsonProcessingException e) {
             sendMessage(sourceWebSocketSession, "{\"error\":\"消息解析失败\"}");
         } catch (NullPointerException e) {
-            sendMessage(sourceWebSocketSession, "{\"error\":\"目标会话不存在\"}");
+            sendMessage(sourceWebSocketSession, "{\"error\":\"目标会话不存在或已结束\"}");
         }
     }
 
