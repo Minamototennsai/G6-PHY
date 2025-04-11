@@ -47,4 +47,9 @@ public class ArticleController {
     public ResponseEntity<MessageDTO> deleteArticle(@PathVariable("article_id") int articleId) {
         return articleService.deleteArticle(articleId);
     }
+
+    @GetMapping("/recommended")
+    public ResponseEntity<ArticleRecommendDTO> recommendArticle() {
+        return articleService.recommendArticle();
+    }
 }

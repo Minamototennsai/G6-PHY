@@ -3,6 +3,7 @@ package g06.ecnu.heartbridge.mapper;
 import g06.ecnu.heartbridge.DTO.ArticleDTO;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,4 +84,17 @@ public interface ArticleSearchMapper {
             @Result(property = "tag", column = "tag")
     })
     public List<ArticleDTO> searchByKeyAndTag(@Param("keyword")String keyword,@Param("tags")List<String> tags);
+
+
+
+
+    /**
+     * 拿到所有id
+     * @return id组
+     */
+    @Select("""
+        select id
+        from articles
+    """)
+    public ArrayList<Integer> getAllId();
 }

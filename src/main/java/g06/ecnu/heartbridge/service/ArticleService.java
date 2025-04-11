@@ -286,4 +286,23 @@ public class ArticleService {
         dto.setMessage("操作成功");
         return ResponseEntity.ok(dto);
     }
+
+    public ResponseEntity<ArticleRecommendDTO> recommendArticle(){
+        ArrayList<Integer>list=articleSearchMapper.getAllId();
+        Collections.shuffle(list);
+        List<Article>articleList=new ArrayList<>();
+        for(int i=0;i<list.size()&&i<3;i++){
+            ArticleDetailDTO articleDetailDTO=articleDetailMapper.getArticleDetailById(list.get(i));
+            Article article=new Article();
+            article.setArticle_id(list.get(i));
+            article.setPreview(articleDetailDTO.getContent().substring(0,50));
+            article.setWriter_name(articleDetailDTO.getWriter_name());
+            article.setTitle(articleDetailDTO.getTitle());
+            articleList.add(article);
+        }
+        ArticleRecommendDTO articleRecommendDTO=new ArticleRecommendDTO();
+        articleRecommendDTO.setArticles(articleList);
+        articleRecommendDTO.setTotal(articleList.size());
+        return ResponseEntity.ok(articleRecommendDTO);
+    }
 }
