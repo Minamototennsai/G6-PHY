@@ -65,6 +65,7 @@ public class ForumService {
         }
         forumPage = forumMapper.selectPage(forumPage, forumQueryWrapper);
         List<Forum> forums = forumPage.getRecords();
+
         if (!forums.isEmpty()) {
             ObjectNode response = objectMapper.createObjectNode();
             ObjectNode data = objectMapper.createObjectNode();
