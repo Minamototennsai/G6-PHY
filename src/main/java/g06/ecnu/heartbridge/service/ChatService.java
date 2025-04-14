@@ -60,10 +60,14 @@ public class ChatService {
     private final Map<WebSocketSession, Lock> sessionLocks = new ConcurrentHashMap<>();
 
     public void onConnect(WebSocketSession webSocketSession){
+        System.out.println(webSocketSession.getUri().getPath());
         try {
             String path = webSocketSession.getUri().getPath();
             String token = path.substring(path.lastIndexOf("/") + 1);
-            int userId = Integer.parseInt(JwtUtil.validateToken(token).get("userId", String.class));
+            System.out.println(token);
+            System.out.println(JwtUtil.validateToken(token).getSubject());
+            int userId = JwtUtil.validateToken(token).get("userId", Integer.class);
+            System.out.println(userId);
             sessionMapIdToSession.put(userId, webSocketSession);
             sessionMapSessionToId.put(webSocketSession, userId);
         } catch (Exception e) {
