@@ -85,7 +85,7 @@ public class ForumService {
                 forumNode.put("update_time", forum.getUpdateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
                 forumArray.add(forumNode);
             }
-            data.put("total", forums.size());
+            data.put("total", forumMapper.selectCount(null));
             data.set("forums", forumArray);
             response.set("data", data);
             return ResponseEntity.ok(response);
