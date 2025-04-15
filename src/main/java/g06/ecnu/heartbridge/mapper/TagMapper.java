@@ -1,5 +1,7 @@
 package g06.ecnu.heartbridge.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import g06.ecnu.heartbridge.entity.Tag;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
  * @since 2025/4/10
  */
 @Mapper
-public interface TagMapper {
+public interface TagMapper extends BaseMapper<Tag> {
     @Delete("""
             DELETE FROM preferences_tag WHERE user_id = #{userId}
             """)

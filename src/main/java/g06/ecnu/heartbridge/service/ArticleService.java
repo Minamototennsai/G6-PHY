@@ -194,13 +194,15 @@ public class ArticleService {
      * @param request http请求
      * @return 响应体
      */
-    public ResponseEntity<ArticleDetailDTO> getArticleDetail(int articleId, HttpServletRequest request){
+    public ResponseEntity<NewArticleDetailDTO> getArticleDetail(int articleId, HttpServletRequest request){
         String jwt=request.getHeader("Authorization").substring(7);
         int userId=JwtUtil.validateToken(jwt).get("userId", Integer.class);
         ArticleDetailDTO dto=articleDetailMapper.getArticleDetailById(articleId);
         afterReadArticleUpdateMapper.addOneViewInArticle(articleId);
         afterReadArticleUpdateMapper.addReadLog(userId,articleId);
-        return ResponseEntity.ok(dto);
+        NewArticleDetailDTO newArticleDetailDTO=new NewArticleDetailDTO();
+        newArticleDetailDTO.setData(dto);
+        return ResponseEntity.ok(newArticleDetailDTO);
     }
 
     /**
@@ -285,5 +287,26 @@ public class ArticleService {
         MessageDTO dto=new MessageDTO();
         dto.setMessage("操作成功");
         return ResponseEntity.ok(dto);
+    }
+
+    public ResponseEntity<NewArticleRecommendDTO> recommendArticle(){
+        ArrayList<Integer>list=articleSearchMapper.getAllId();
+        Collections.shuffle(list);
+        List<Article>articleList=new ArrayList<>();
+        for(int i=0;i<list.size()&&i<3;i++){
+            ArticleDetailDTO articleDetailDTO=articleDetailMapper.getArticleDetailById(list.get(i));
+            Article article=new Article();
+            article.setArticle_id(list.get(i));
+            article.setPreview(articleDetailDTO.getContent().substring(0,50));
+            article.setWriter_name(articleDetailDTO.getWriter_name());
+            article.setTitle(articleDetailDTO.getTitle());
+            articleList.add(article);
+        }
+        ArticleRecommendDTO articleRecommendDTO=new ArticleRecommendDTO();
+        articleRecommendDTO.setArticles(articleList);
+        articleRecommendDTO.setTotal(articleList.size());
+        NewArticleRecommendDTO newArticleRecommendDTO=new NewArticleRecommendDTO();
+        newArticleRecommendDTO.setData(articleRecommendDTO);
+        return ResponseEntity.ok(newArticleRecommendDTO);
     }
 }

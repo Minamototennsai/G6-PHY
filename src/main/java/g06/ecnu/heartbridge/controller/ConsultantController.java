@@ -60,5 +60,8 @@ public class ConsultantController {
         return consultantService.setConsultantBusy(id, isAvailable);
     }
 
-
+    @GetMapping("/consultants/{consultant_id}/availability")
+    public ResponseEntity<Object> getAvailability(@PathVariable("consultant_id") int consultant_id) {
+        return consultantService.getAvailability(consultant_id);
+    }
 }
