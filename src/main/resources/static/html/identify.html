@@ -2,9 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>认证</title>
+    <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
+    <script src="../js/checktoken.js"></script>
+    <script src="../js/indentify.js"></script>
 </head>
+<style>
+    #prevPageButton,
+    #nextPageButton,
+    #nowPage{
+        display: inline-block;
+        margin: 0 5px;
+    }
+</style>
 <body>
-
+    <div id="title">
+        <a id="search" href="search.html">查询</a>
+        <a id="report" href="report.html">举报列</a>
+        <a id="identify" href="identify.html">认证</a>
+    </div>
+    <div id="identifyList">
+    </div>
+    <div id="pageChooser">
+        <div id="prevPageButton">
+            <input type="button" value="上一页" onclick="prevPage()">
+        </div>
+        <span id="nowPage"></span>
+        <div id="nextPageButton">
+            <input type="button" value="下一页" onclick="nextPage()">
+        </div>
+    </div>
 </body>
+<script>
+    if(sessionStorage.getItem('token')==null){
+        alert('你必须先登录');
+        location.href="../index.html";
+    }else{
+        checkToken(sessionStorage.getItem('token'));
+    }
+    fillIdentify(1);
+</script>
 </html>
