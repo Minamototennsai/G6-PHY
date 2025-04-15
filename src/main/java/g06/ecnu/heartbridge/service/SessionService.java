@@ -81,7 +81,11 @@ public class SessionService {
                     usernameNode.add(username);
                 }
                 sessionNode.set("username", usernameNode);
-                sessionNode.put("end_time", session.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                if (session.getEndTime() != null) {
+                    sessionNode.put("end_time", session.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                } else {
+                    sessionNode.put("end_time", "");
+                }
                 arrayNode.add(sessionNode);
             }
             response.set("data", arrayNode);
