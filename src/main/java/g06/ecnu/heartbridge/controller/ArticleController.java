@@ -29,7 +29,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{article_id}")
-    public ResponseEntity<ArticleDetailDTO> getArticleDetail(@PathVariable("article_id") int articleId, HttpServletRequest request) {
+    public ResponseEntity<NewArticleDetailDTO> getArticleDetail(@PathVariable("article_id") int articleId, HttpServletRequest request) {
         return articleService.getArticleDetail(articleId,request);
     }
 
@@ -46,5 +46,10 @@ public class ArticleController {
     @DeleteMapping("/{article_id}")
     public ResponseEntity<MessageDTO> deleteArticle(@PathVariable("article_id") int articleId) {
         return articleService.deleteArticle(articleId);
+    }
+
+    @GetMapping("/recommended")
+    public ResponseEntity<NewArticleRecommendDTO> recommendArticle() {
+        return articleService.recommendArticle();
     }
 }
