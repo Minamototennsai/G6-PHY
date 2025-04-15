@@ -62,7 +62,12 @@ public class ScheduleService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"预约失败：时间不合法\"}");
         }
         int timeConverted =localTime.getHour()*2 + localTime.getMinute()/30;
-        Schedule schedule = new Schedule(consultantId, clientId, localDate, timeConverted);
+        Schedule schedule = new Schedule();
+        schedule.setConsultantId(consultantId);
+        schedule.setClientId(clientId);
+        schedule.setDate(localDate);
+        schedule.setTime(timeConverted);
+        schedule.setAgree("pending");
         int result = scheduleMapper.insert(schedule);
         if (result > 0) {
             return ResponseEntity.ok("{\"message\":\"预约成功\"}");

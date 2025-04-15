@@ -44,11 +44,4 @@ public class Schedule implements Serializable {
     private Integer time;
 
     private Object agree;
-
-    public Schedule(Integer clientId, Integer consultantId, LocalDate date, int time) {
-        this.clientId = clientId;
-        this.consultantId = consultantId;
-        this.date = date;
-        this.time = time;
-    }
 }
