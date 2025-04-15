@@ -3,6 +3,7 @@ package g06.ecnu.heartbridge.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import g06.ecnu.heartbridge.DTO.ConsultantDetailDTO;
 import g06.ecnu.heartbridge.DTO.ConsultantTagDTO;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,8 @@ public class ConsultantService {
 
     @Resource
     private ConsultantDetailMapper consultantDetailMapper;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /*
         根据咨询师id来查询可预约时间：
@@ -103,8 +107,20 @@ public class ConsultantService {
         queryWrapper.eq("consultant_id", consultantId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
         if (!schedules.isEmpty()) {
-            Map<String, List<Schedule>> response = new HashMap<>();
-            response.put("data", schedules);
+            ObjectNode response = objectMapper.createObjectNode();
+            ObjectNode data = objectMapper.createObjectNode();
+            ArrayNode arrayNode = objectMapper.createArrayNode();
+            for (Schedule schedule : schedules) {
+                ObjectNode scheduleNode = objectMapper.createObjectNode();
+                scheduleNode.put("schedule_id", schedule.getId());
+                scheduleNode.put("username", usersMapper.selectById(schedule.getClientId()).getUsername());
+                scheduleNode.put("date", schedule.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                scheduleNode.put("time", schedule.getTime());
+                scheduleNode.put("agree", schedule.getAgree().toString());
+                arrayNode.add(scheduleNode);
+            }
+            data.set("data", arrayNode);
+            response.set("data", data);
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"当前暂无预约请求\"}");
