@@ -11,7 +11,7 @@ function handleLogin(account,password){
         type: JSON
     }).then(function (response){
         if(response.status === 200){
-            localStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('token', response.data.token);
             //console.log(localStorage.getItem('token'));
             location.href="/html/report.html"
         }else if(response.status === 400){
