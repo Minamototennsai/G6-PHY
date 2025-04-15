@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // 关闭 CSRF 保护
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended","/","/index.html","/js/**","/css/**","/html/**").permitAll()
+                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended","/","/index.html","/js/**","/css/**","/html/**", "/api/token").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
