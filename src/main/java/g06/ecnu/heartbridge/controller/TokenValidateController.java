@@ -1,11 +1,8 @@
 package g06.ecnu.heartbridge.controller;
 
-import g06.ecnu.heartbridge.exception.InvalidTokenException;
 import g06.ecnu.heartbridge.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
