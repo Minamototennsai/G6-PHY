@@ -130,10 +130,19 @@ public class ConsultantService {
     //根据关键词搜索咨询师
     public ResponseEntity<Object> getConsultant(String keyword, Integer page, Integer pageSize) {
         List<ConsultantTagDTO> result = consultantMapper.searchConsultants(keyword, page, pageSize);
+        for (ConsultantTagDTO consultantTagDTO : result) {
+            int consultantId = consultantTagDTO.getId();
+            QueryWrapper<ConsultantDetail> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("user_id", consultantId);
+            ConsultantDetail consultantDetail = consultantDetailMapper.selectOne(queryWrapper);
+            String isFree = consultantDetail.getIsFree();
+            boolean isOnline = chatService.ifUserOnline(consultantId);
+            consultantTagDTO.setAvailable(isOnline && isFree.equals("yes"));
+        }
         if (!result.isEmpty()) {
             Map<String, Object> response = new HashMap<>();
             Map<String, Object> data = new HashMap<>();
-            data.put("total", result.size());
+            data.put("total", consultantMapper.searchConsultantsCount(keyword));
             data.put("page", page+1);
             data.put("pageSize", pageSize);
             data.put("list", result);

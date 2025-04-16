@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +117,7 @@ public class NewManagerService {
             scheduleNode.put("fromname", usersMapper.selectById(schedule.getClientId()).getUsername());
             scheduleNode.put("toid", schedule.getClientId());
             scheduleNode.put("toname", usersMapper.selectById(schedule.getConsultantId()).getUsername());
-            scheduleNode.put("time", schedule.getTime());
+            scheduleNode.put("time", ChronoUnit.DAYS.between(today, schedule.getDate()));
             schedulesArray.add(scheduleNode);
         }
         response.set("schedules", schedulesArray);
