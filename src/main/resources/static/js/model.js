@@ -69,6 +69,7 @@ function getDateSchedule(date){
         }
     }).then(function (response){
         let panel=document.getElementById('panel');
+        panel.innerHTML='';
         let schedule=response.data['schedules'];
         for(let i in schedule){
             if(schedule[i]['time']!==date){
