@@ -128,6 +128,10 @@ public interface ManagerMapper {
     from chat_message
     where session_id=#{id}
     """)
+    @Results({
+            @Result(column = "sender_id",property = "id"),
+            @Result(column = "content",property = "content")
+    })
     ArrayList<IdAndContent> searchAllSessionLogsById(@Param("id") int id);
 
 

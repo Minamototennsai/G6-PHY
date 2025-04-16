@@ -22,7 +22,7 @@ function fillReportList(page){
             let target_id=reports[i]['target_id'];
             block.innerHTML+='<div id="report'+id+'">\n' +
                 '               <span>'+id+'举报类型:'+type+' 发送者:'+sender_id+'被举报者:'+target_id+'</span>\n' +
-                '               <input type="button" value="查看" onclick="showDetail('+id+','+type+')">\n' +
+                '               <input type="button" value="查看" onclick="showDetail('+id+',\''+type+'\')">\n' +
                 '               <input type="button" value="忽略" onclick="ignoreReport('+id+')">\n' +
                 '               <br>\n' +
                 '             </div>'
@@ -47,6 +47,8 @@ function ignoreReport(id){
 }
 
 function showDetail(id,type){
+    // alert(id)
+    // alert(type)
     sessionStorage.setItem('id',id);
     sessionStorage.setItem('type',type);
     location.href='/html/search.html';
