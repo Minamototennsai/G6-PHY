@@ -46,6 +46,21 @@ public interface ConsultantMapper extends BaseMapper<Users> {
 
     @Select("""
     <script>
+        SELECT COUNT(DISTINCT u.id)
+        FROM users u
+        JOIN expertise_tag et ON u.id = et.user_id
+        JOIN tag t ON et.tag_id = t.id
+        <if test="keyword != null and keyword != ''">
+            WHERE
+                (u.username LIKE CONCAT('%', #{keyword}, '%')
+                OR t.name LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+    </script>
+    """)
+    int searchConsultantsCount(@Param("keyword") String keyword);
+
+    @Select("""
+    <script>
         SELECT u.id, u.username, u.profile, GROUP_CONCAT(t.name) AS tags
         FROM users u
         JOIN expertise_tag et ON u.id = et.user_id

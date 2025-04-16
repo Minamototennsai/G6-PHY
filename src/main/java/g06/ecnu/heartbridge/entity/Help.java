@@ -7,9 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -22,8 +20,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Help implements Serializable {
 
     @Serial
@@ -32,6 +28,8 @@ public class Help implements Serializable {
     @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
+    private String uuid;
+
     @JsonProperty("session_id")
     private Integer sessionId;
 
@@ -39,10 +37,4 @@ public class Help implements Serializable {
     private Integer senderId;
 
     private String content;
-
-    public Help(Integer sessionId, Integer senderId, String content) {
-        this.sessionId = sessionId;
-        this.senderId = senderId;
-        this.content = content;
-    }
 }

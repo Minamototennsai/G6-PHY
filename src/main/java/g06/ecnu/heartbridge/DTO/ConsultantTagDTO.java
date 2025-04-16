@@ -18,4 +18,5 @@ public class ConsultantTagDTO {
     private String username;
     private String profile;
     private List<String> tags;
+    private boolean isAvailable;
 }

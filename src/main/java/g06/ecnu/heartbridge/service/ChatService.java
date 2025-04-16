@@ -20,9 +20,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.Lock;
@@ -216,7 +214,7 @@ public class ChatService {
         double currentScore = consultantDetail.getAvgScore();
         int currentEvaluationCount = consultantDetail.getEvaluationCount();
         consultantDetailUpdateWrapper.eq("user_id", consultantId)
-                .set("score", (currentScore * currentEvaluationCount + score)/(currentScore+1))
+                .set("avg_score", (currentScore * currentEvaluationCount + score)/(currentScore+1))
                 .set("evaluation_count", currentEvaluationCount + 1);
         int result = consultantDetailMapper.update(consultantDetailUpdateWrapper);
         if(result == 0){
@@ -259,5 +257,13 @@ public class ChatService {
 
     public boolean ifUserOnline(int userId){
         return sessionMapIdToSession.containsKey(userId);
+    }
+
+    public int getDaily() {
+        return sessionMapIdToSession.size();
+    }
+
+    public List<Integer> getCurrentSessions(){
+        return new ArrayList<>(sessions.keySet());
     }
 }
