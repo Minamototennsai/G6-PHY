@@ -10,7 +10,6 @@ import g06.ecnu.heartbridge.entity.*;
 import g06.ecnu.heartbridge.mapper.*;
 import g06.ecnu.heartbridge.utils.JwtUtil;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -81,6 +80,7 @@ public class ChatService {
             JsonNode jsonNode = objectMapper.readTree(message);
             int senderId = sessionMapSessionToId.get(sourceWebSocketSession);
             int destSession = jsonNode.get("to").asInt();
+            boolean toShow = jsonNode.get("toShow").asBoolean();
             QueryWrapper<Sessions> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", destSession);
             Long ifSessionExist = sessionsMapper.selectCount(queryWrapper);
@@ -92,6 +92,14 @@ public class ChatService {
                     .map(sessionMapIdToSession::get)
                     .filter(Objects::nonNull)
                     .toList();
+            if (!toShow) {
+                for (WebSocketSession destWebSocketSession : webSocketSessions) {
+                    if (!usersMapper.selectById(sessionMapSessionToId.get(destWebSocketSession)).getType().equals("client")) {
+                        sendMessage(destWebSocketSession, message);
+                    }
+                }
+                return;
+            }
             for (WebSocketSession destWebSocketSession : webSocketSessions) {
                 sendMessage(destWebSocketSession, message);
             }
