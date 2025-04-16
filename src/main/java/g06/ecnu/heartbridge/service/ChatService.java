@@ -7,12 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import g06.ecnu.heartbridge.entity.*;
-import g06.ecnu.heartbridge.mapper.ChatMessageMapper;
-import g06.ecnu.heartbridge.mapper.ConsultantDetailMapper;
-import g06.ecnu.heartbridge.mapper.SessionsMapper;
-import g06.ecnu.heartbridge.mapper.UserSessionMapper;
+import g06.ecnu.heartbridge.mapper.*;
 import g06.ecnu.heartbridge.utils.JwtUtil;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -53,6 +51,9 @@ public class ChatService {
     @Resource
     private ConsultantDetailMapper consultantDetailMapper;
 
+    @Resource
+    private UsersMapper usersMapper;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<Integer, CopyOnWriteArraySet<Integer>> sessions = new ConcurrentHashMap<>();
     private final Map<Integer, WebSocketSession> sessionMapIdToSession = new ConcurrentHashMap<>();
@@ -86,12 +87,6 @@ public class ChatService {
             if (ifSessionExist == 0) {
                 throw new NullPointerException();
             }
-            ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setSenderId(senderId);
-            chatMessage.setSessionId(destSession);
-            chatMessage.setContent(jsonNode.get("text").asText());
-            chatMessage.setSendTime(LocalDateTime.now());
-            chatMessageMapper.insert(chatMessage);
             List<WebSocketSession> webSocketSessions = sessions.get(destSession)
                     .stream()
                     .map(sessionMapIdToSession::get)
@@ -100,6 +95,12 @@ public class ChatService {
             for (WebSocketSession destWebSocketSession : webSocketSessions) {
                 sendMessage(destWebSocketSession, message);
             }
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setSenderId(senderId);
+            chatMessage.setSessionId(destSession);
+            chatMessage.setContent(jsonNode.get("text").asText());
+            chatMessage.setSendTime(LocalDateTime.now());
+            chatMessageMapper.insert(chatMessage);
         } catch (JsonProcessingException e) {
             sendMessage(sourceWebSocketSession, "{\"error\":\"消息解析失败\"}");
         } catch (NullPointerException e) {
@@ -169,7 +170,7 @@ public class ChatService {
 
     public ResponseEntity<Object> closeSession(int sessionId){
         UpdateWrapper<Sessions> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("session_id", sessionId)
+        updateWrapper.eq("id", sessionId)
                 .set("is_overtime", "yes")
                 .set("end_time", LocalDateTime.now());
         int result = sessionsMapper.update(updateWrapper);
@@ -186,7 +187,7 @@ public class ChatService {
         QueryWrapper<ConsultantDetail> consultantDetailQueryWrapper = new QueryWrapper<>();
         QueryWrapper<UserSession> userSessionQueryWrapper = new QueryWrapper<>();
         QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
-        sessionQueryWrapper.eq("session_id", sessionId);
+        sessionQueryWrapper.eq("id", sessionId);
         Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
         if (session == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"会话不存在\"}");
