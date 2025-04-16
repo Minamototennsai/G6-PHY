@@ -31,8 +31,8 @@ public class HelpController {
     }
 
     @PostMapping("/help")
-    public ResponseEntity<Object> addHelp(@RequestParam int consultantId, @RequestParam int sessionId, @RequestParam String content){
-        return helpService.addHelp(consultantId, sessionId, content);
+    public ResponseEntity<Object> addHelp(@RequestParam String help_id, @RequestParam int consultantId, @RequestParam int sessionId, @RequestParam String content){
+        return helpService.addHelp(help_id, consultantId, sessionId, content);
     }
 
     @PostMapping("/help/{help_id}")

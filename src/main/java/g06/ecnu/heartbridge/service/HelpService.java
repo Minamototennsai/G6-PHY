@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +48,12 @@ public class HelpService {
     }
 
     //新增求助
-    public ResponseEntity<Object> addHelp(int consultantId, int sessionId, String content) {
-        Help help = new Help(consultantId, sessionId, content);
+    public ResponseEntity<Object> addHelp(String uuid, int consultantId, int sessionId, String content) {
+        Help help = new Help();
+        help.setUuid(uuid);
+        help.setSenderId(consultantId);
+        help.setSessionId(sessionId);
+        help.setContent(content);
         int result = helpMapper.insert(help);
         if (result > 0) {
             return ResponseEntity.ok("{\"message\":\"创建求助成功\"}");
