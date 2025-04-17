@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 
+ *  Entity
  * </p>
  *
  * @author Tennsai Minamoto
@@ -40,4 +41,17 @@ public class Sessions implements Serializable {
 
     @JsonProperty("is_overtime")
     private String isOvertime;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sessions sessions = (Sessions) o;
+        return Objects.equals(id, sessions.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
