@@ -34,7 +34,7 @@ function search(id,type){
             let logs=response.data['logs'];
             for(let i in logs){
                 display.innerHTML+='<div>\n' +
-                    '                    <span>'+logs[i]['id']+':'+logs[i]['content']+'</span>\n' +
+                    '                    <span>'+logs[i]['id']+':name='+logs[i]['name']+':'+logs[i]['content']+'</span>\n' +
                     '               </div>'
             }
             display.innerHTML+='<div>\n' +
@@ -51,9 +51,10 @@ function search(id,type){
             }
         }).then(function (response){
             let user_id=response.data['user_id'];
+            let name=response.data['name'];
             let content=response.data['content'];
             display.innerHTML+='<div>\n' +
-                '                   <span>作者id'+user_id+'</span>\n' +
+                '                   <span>作者id'+user_id+':name='+name+'</span>\n' +
                 '               </div>';
             while(content.length>100){
                 let temp=content.substring(0,100);
@@ -73,9 +74,10 @@ function search(id,type){
             }
         }).then(function (response){
             let user_id=response.data['user_id'];
+            let name=response.data['name'];
             let content=response.data['content'];
             display.innerHTML+='<div>\n' +
-                '                   <span>创建者id'+user_id+'</span>\n' +
+                '                   <span>创建者id'+user_id+':name='+name+'</span>\n' +
                 '               </div>';
             while(content.length>100){
                 let temp=content.substring(0,100);
@@ -95,9 +97,10 @@ function search(id,type){
             }
         }).then(function (response){
             let user_id=response.data['user_id'];
+            let name=response.data['name'];
             let content=response.data['content'];
             display.innerHTML+='<div>\n' +
-                '                   <span>发送者id'+user_id+'</span>\n' +
+                '                   <span>发送者id'+user_id+':name='+name+'</span>\n' +
                 '               </div>';
             while(content.length>100){
                 let temp=content.substring(0,100);
