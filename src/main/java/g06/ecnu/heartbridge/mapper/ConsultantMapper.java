@@ -25,8 +25,9 @@ public interface ConsultantMapper extends BaseMapper<Users> {
         FROM users u
         JOIN expertise_tag et ON u.id = et.user_id
         JOIN tag t ON et.tag_id = t.id
+        WHERE 1=1 AND u.status = 'active' AND u.type = 'consultant'
         <if test="keyword != null and keyword != ''">
-            WHERE
+            AND
                 (u.username LIKE CONCAT('%', #{keyword}, '%')
                 OR t.name LIKE CONCAT('%', #{keyword}, '%'))
         </if>
@@ -50,8 +51,9 @@ public interface ConsultantMapper extends BaseMapper<Users> {
         FROM users u
         JOIN expertise_tag et ON u.id = et.user_id
         JOIN tag t ON et.tag_id = t.id
+        WHERE 1=1 AND u.status = 'active' AND u.type = 'consultant'
         <if test="keyword != null and keyword != ''">
-            WHERE
+            AND
                 (u.username LIKE CONCAT('%', #{keyword}, '%')
                 OR t.name LIKE CONCAT('%', #{keyword}, '%'))
         </if>

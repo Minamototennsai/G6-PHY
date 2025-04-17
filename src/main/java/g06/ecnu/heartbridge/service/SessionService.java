@@ -44,19 +44,24 @@ public class SessionService {
         QueryWrapper<UserSession> queryWrapper = new QueryWrapper<>();
         if (userType.equals("0")) {
             queryWrapper.eq("consultant_id", userId);
-            System.out.printf("consultant_id: %s\n", userId);
         } else {
             queryWrapper.eq("client_id", userId);
         }
         List<UserSession> userSessions = userSessionMapper.selectList(queryWrapper);
+        Set<Sessions> sessionsSet = new HashSet<>();
         if (!userSessions.isEmpty()) {
-            Map<Sessions, Set<Integer>> map = new HashMap<>();
             for (UserSession userSession : userSessions) {
-                Sessions session = sessionsMapper.selectById(userSession.getSessionId());
-                if (session != null) {
-                    if (!map.containsKey(session)) {
-                        map.put(session, new HashSet<>());
-                    }
+                sessionsSet.add(sessionsMapper.selectById(userSession.getSessionId()));
+            }
+            Map<Sessions, Set<Integer>> map = new HashMap<>();
+            for (Sessions session : sessionsSet) {
+                if (!map.containsKey(session)) {
+                    map.put(session, new HashSet<>());
+                }
+                QueryWrapper<UserSession> userSessionQueryWrapper = new QueryWrapper<>();
+                userSessionQueryWrapper.eq("session_id", session.getId());
+                List<UserSession> userSessionList = userSessionMapper.selectList(userSessionQueryWrapper);
+                for (UserSession userSession : userSessionList) {
                     map.get(session).add(userSession.getClientId());
                     map.get(session).add(userSession.getConsultantId());
                 }
@@ -91,7 +96,6 @@ public class SessionService {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"未获取到相关会话\"}");
         }
-
     }
 
     public ResponseEntity<Object> getMessages(int sessionId) {
