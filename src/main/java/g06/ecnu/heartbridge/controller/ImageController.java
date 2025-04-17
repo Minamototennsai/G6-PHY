@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ImageController {
 
     // 从 application.yml 配置文件中注入外部存储路径
-    @Value("${spring.web.resources.static-locations}")
+    @Value("${image-upload.path}")
     private String rawUploadDir;
 
     // 获取图片
