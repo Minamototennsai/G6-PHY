@@ -65,8 +65,8 @@ public class ImageController {
             Files.createDirectories(targetLocation.getParent());
             Files.copy(file.getInputStream(), targetLocation);
 
-            String fileUrl = "/image/" + uuidFileName;
-            return ResponseEntity.ok(fileUrl);
+            String fileUrl = "/api/image/" + uuidFileName;
+            return ResponseEntity.ok("{\"data\": "+ "\"" + fileUrl + "\"" + "}");
         } catch (IOException ex) {
             return ResponseEntity.status(500).body("Could not store file");
         }
