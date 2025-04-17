@@ -17,7 +17,7 @@ spring:
   web:
     resources:
       #TODO : edit.
-      static-locations: file:///C:/Users/minam/Desktop/image/
+      static-locations: file:///C:/Users/minam/Desktop/image/, classpath:/static
 
 logging:
   level:
@@ -34,3 +34,5 @@ logging:
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   type-aliases-package: g06/ecnu/heartbridge/entity
+image-upload:
+  path: file:///C:/Users/minam/Desktop/image/

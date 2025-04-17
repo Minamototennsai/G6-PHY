@@ -50,7 +50,6 @@ public class NewManagerService {
                 .last("LIMIT 10");
         List<ConsultantDetail> consultantDetails = consultantDetailMapper.selectList(consultantDetailQueryWrapper);
         ObjectNode response = new ObjectMapper().createObjectNode();
-        ObjectNode consultants = new ObjectMapper().createObjectNode();
         ArrayNode consultantsArray = new ObjectMapper().createArrayNode();
         for (ConsultantDetail consultantDetail : consultantDetails) {
             ObjectNode consultantsNode = new ObjectMapper().createObjectNode();
@@ -59,8 +58,7 @@ public class NewManagerService {
             consultantsNode.put("score", consultantDetail.getAvgScore());
             consultantsArray.add(consultantsNode);
         }
-        consultants.set("consultants", consultantsArray);
-        response.set("consultants", consultants);
+        response.set("consultants", consultantsArray);
         return ResponseEntity.ok(response);
     }
 
