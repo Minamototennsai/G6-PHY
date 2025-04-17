@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查询</title>
+    <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
+    <script src="../js/checktoken.js"></script>
+    <script src="../js/search.js"></script>
+</head>
+<style>
+    .sig{
+        margin-right: 20px;
+    }
+</style>
+<body>
+    <div id="title">
+        <a id="search" href="search.html">查询</a>
+        <a id="report" href="report.html">举报列</a>
+        <a id="identify" href="identify.html">认证</a>
+        <a id="model" href="model.html">面板</a>
+    </div>
+    <div id="searchBlank">
+        <div id="blank">
+            <input id="searchTextbox" type="text">
+            <input type="button" value="搜索" onclick="search(document.getElementById('searchTextbox').value,document.querySelector('input[name=\'type\']:checked').value)">
+        </div>
+        <div id="singleChooser">
+            <span>用户</span>
+            <input class="sig" type="radio" name="type" value="user" checked>
+            <span>文章</span>
+            <input class="sig" type="radio" name="type" value="article">
+            <span>论坛</span>
+            <input class="sig" type="radio" name="type" value="forum">
+            <span>评论</span>
+            <input class="sig" type="radio" name="type" value="evaluate">
+            <span>会话</span>
+            <input class="sig" type="radio" name="type" value="consult">
+        </div>
+        <div id="display">
+        </div>
+    </div>
+</body>
+<script>
+    if(sessionStorage.getItem('token')==null){
+        alert('你必须先登录');
+        location.href="../index.html";
+    }else{
+        checkToken(sessionStorage.getItem('token'));
+    }
+    let id=sessionStorage.getItem('id');
+    //alert(id)
+    let type=sessionStorage.getItem('type');
+    //alert(type)
+    if(id!=null&&type!=null)search(id,type);
+</script>
+</html>

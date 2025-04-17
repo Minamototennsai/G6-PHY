@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面板</title>
+    <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
+    <script src="../js/checktoken.js"></script>
+    <script src="../js/model.js"></script>
+</head>
+<style>
+    .consultantData{
+        display: inline-block;
+        margin: 0 5px;
+    }
+</style>
+<body>
+    <div id="title">
+       <a id="search" href="search.html">查询</a>
+       <a id="report" href="report.html">举报列</a>
+       <a id="identify" href="identify.html">认证</a>
+       <a id="model" href="model.html">面板</a>
+    </div>
+    <div id="online">
+        <span>在线</span>
+        <span id="onlineNum"></span>
+        <span>人</span>
+    </div>
+    <div id="scoreList" class="consultantData">
+        <span>咨询师前十评分</span>
+    </div>
+    <div id="sessionList" class="consultantData">
+        <span>咨询师会话进行次数前十排行</span>
+    </div>
+    <div id="nowSession">
+        <span>正在进行的会话:</span>
+    </div>
+    <div id="scheduleWeek">
+        <span>预约情况:之后x天</span>
+        <br>
+        <input type="button" value="0" onclick="getDateSchedule(0)">
+        <input type="button" value="1" onclick="getDateSchedule(1)">
+        <input type="button" value="2" onclick="getDateSchedule(2)">
+        <input type="button" value="3" onclick="getDateSchedule(3)">
+        <input type="button" value="4" onclick="getDateSchedule(4)">
+        <input type="button" value="5" onclick="getDateSchedule(5)">
+        <input type="button" value="6" onclick="getDateSchedule(6)">
+        <div id="panel">
+
+        </div>
+    </div>
+</body>
+<script>
+    if(sessionStorage.getItem('token')==null){
+        alert('你必须先登录');
+        location.href="../index.html";
+    }else{
+        checkToken(sessionStorage.getItem('token'));
+    }
+    daily();
+    scoreRank();
+    sessionRank();
+    nowSession();
+</script>
+</html>

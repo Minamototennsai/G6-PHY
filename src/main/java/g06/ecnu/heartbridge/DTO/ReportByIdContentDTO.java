@@ -9,5 +9,6 @@ import lombok.Data;
 @Data
 public class ReportByIdContentDTO {
     private int user_id;
+    private String name;
     private String content;
 }

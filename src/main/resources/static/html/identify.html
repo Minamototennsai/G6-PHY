@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>举报列</title>
+    <title>认证</title>
     <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
     <script src="../js/checktoken.js"></script>
-    <script src="../js/report.js"></script>
+    <script src="../js/indentify.js"></script>
 </head>
 <style>
     #prevPageButton,
@@ -22,8 +22,7 @@
         <a id="identify" href="identify.html">认证</a>
         <a id="model" href="model.html">面板</a>
     </div>
-
-    <div id="reportList">
+    <div id="identifyList">
     </div>
     <div id="pageChooser">
         <div id="prevPageButton">
@@ -36,14 +35,12 @@
     </div>
 </body>
 <script>
-    //alert(1)
     if(sessionStorage.getItem('token')==null){
         alert('你必须先登录');
         location.href="../index.html";
     }else{
         checkToken(sessionStorage.getItem('token'));
     }
-    //alert(2)
-    fillReportList(1);
+    fillIdentify(1);
 </script>
 </html>

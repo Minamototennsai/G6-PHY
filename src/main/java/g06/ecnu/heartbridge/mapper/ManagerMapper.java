@@ -90,44 +90,52 @@ public interface ManagerMapper {
 
 
     @Select("""
-    select comment.user_id,comment.content
-    from comment
-    where id=#{id}
+    select comment.user_id,username,comment.content
+    from comment join users on user_id=users.id
+    where comment.id=#{id}
     """)
     @Results({
             @Result(column = "user_id",property = "user_id"),
+            @Result(column = "username",property = "name"),
             @Result(column = "content",property = "content")
     })
     ReportByIdContentDTO searchEvaluateById(@Param("id") int id);
 
     @Select("""
-    select articles.writer_id,articles.content
-    from articles
-    where id=#{id}
+    select articles.writer_id,username,articles.content
+    from articles join users on writer_id=users.id
+    where articles.id=#{id}
     """)
     @Results({
             @Result(column = "writer_id",property = "user_id"),
+            @Result(column = "username",property = "name"),
             @Result(column = "content",property = "content")
     })
     ReportByIdContentDTO searchArticleById(@Param("id")int id);
 
     @Select("""
-    select forum.creator_id,forum.content
-    from forum
-    where id=#{id}
+    select forum.creator_id,username,forum.content
+    from forum join users on creator_id=users.id
+    where forum.id=#{id}
     """)
     @Results({
             @Result(column = "creator_id",property = "user_id"),
+            @Result(column = "username",property = "name"),
             @Result(column = "content",property = "content")
     })
     ReportByIdContentDTO searchForumById(@Param("id")int id);
 
 
     @Select("""
-    select chat_message.sender_id,chat_message.content
-    from chat_message
+    select chat_message.sender_id,username,chat_message.content
+    from chat_message join users on sender_id=users.id
     where session_id=#{id}
     """)
+    @Results({
+            @Result(column = "sender_id",property = "id"),
+            @Result(column = "username",property = "name"),
+            @Result(column = "content",property = "content")
+    })
     ArrayList<IdAndContent> searchAllSessionLogsById(@Param("id") int id);
 
 
