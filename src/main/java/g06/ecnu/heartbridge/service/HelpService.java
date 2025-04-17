@@ -1,13 +1,17 @@
 package g06.ecnu.heartbridge.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import g06.ecnu.heartbridge.DTO.HelpDTO;
 import g06.ecnu.heartbridge.entity.Help;
 import g06.ecnu.heartbridge.mapper.HelpMapper;
+import g06.ecnu.heartbridge.mapper.UsersMapper;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +31,13 @@ public class HelpService {
 
     @Resource
     private ChatService chatService;
+    @Autowired
+    private UsersMapper usersMapper;
 
     //获取求助
     public ResponseEntity<Object> getHelp(Integer helpId){
         List<Help> helps;
+        List<HelpDTO> helpDTOs = new ArrayList<>();
         if (helpId == null) {
             helps = helpMapper.selectList(null);
         } else {
@@ -38,8 +45,13 @@ public class HelpService {
             queryWrapper.eq("id", helpId);
             helps = helpMapper.selectList(queryWrapper);
         }
-        Map<String, List<Help>> response = new HashMap<>();
-        response.put("data", helps);
+        for (Help help : helps) {
+            HelpDTO helpDTO = new HelpDTO(help);
+            helpDTO.setUsername(usersMapper.selectById(help.getSenderId()).getUsername());
+            helpDTOs.add(helpDTO);
+        }
+        Map<String, List<HelpDTO>> response = new HashMap<>();
+        response.put("data", helpDTOs);
         if (response.get("data") == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"未找到求助\"}");
         } else {
