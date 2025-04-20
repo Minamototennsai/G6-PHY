@@ -181,7 +181,7 @@ public class ArticleService {
         }
         ArticleResponseData data=new ArticleResponseData();
         data.setArticles(articles1);
-        data.setTotal(articles1.size());
+        data.setTotal(articles.size());
         ArticleSearchDTO articleSearchDTO=new ArticleSearchDTO();
         articleSearchDTO.setData(data);
         return ResponseEntity.ok(articleSearchDTO);
