@@ -2,8 +2,10 @@ package g06.ecnu.heartbridge.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import g06.ecnu.heartbridge.entity.Schedule;
+import g06.ecnu.heartbridge.entity.Sessions;
 import g06.ecnu.heartbridge.entity.Users;
 import g06.ecnu.heartbridge.mapper.ScheduleMapper;
+import g06.ecnu.heartbridge.mapper.SessionsMapper;
 import g06.ecnu.heartbridge.mapper.UsersMapper;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
@@ -32,11 +34,22 @@ public class ScheduleService {
     @Resource
     private UsersMapper usersMapper;
 
+    @Resource
+    private SessionsMapper sessionsMapper;
+
     //获取用户预约列表
     public ResponseEntity<Object> getSchedule(int clientId) {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
+        for (Schedule schedule : schedules) {
+            QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
+            sessionQueryWrapper.eq("schedule_id", schedule.getId());
+            Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
+            if (session != null) {
+                schedules.remove(schedule);
+            }
+        }
         if (!schedules.isEmpty()) {
             Map<String, List<Schedule>> response = new HashMap<>();
             response.put("data", schedules);
