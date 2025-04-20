@@ -9,11 +9,9 @@ import g06.ecnu.heartbridge.DTO.ConsultantDetailDTO;
 import g06.ecnu.heartbridge.DTO.ConsultantTagDTO;
 import g06.ecnu.heartbridge.entity.ConsultantDetail;
 import g06.ecnu.heartbridge.entity.Schedule;
+import g06.ecnu.heartbridge.entity.Sessions;
 import g06.ecnu.heartbridge.entity.Users;
-import g06.ecnu.heartbridge.mapper.ConsultantDetailMapper;
-import g06.ecnu.heartbridge.mapper.ConsultantMapper;
-import g06.ecnu.heartbridge.mapper.ScheduleMapper;
-import g06.ecnu.heartbridge.mapper.UsersMapper;
+import g06.ecnu.heartbridge.mapper.*;
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +52,9 @@ public class ConsultantService {
 
     @Resource
     private ConsultantDetailMapper consultantDetailMapper;
+
+    @Resource
+    private SessionsMapper sessionsMapper;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -106,6 +107,14 @@ public class ConsultantService {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("consultant_id", consultantId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
+        for (Schedule schedule : schedules) {
+            QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
+            sessionQueryWrapper.eq("schedule_id", schedule.getId());
+            Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
+            if (session != null) {
+                schedules.remove(schedule);
+            }
+        }
         if (!schedules.isEmpty()) {
             ObjectNode response = objectMapper.createObjectNode();
             ObjectNode data = objectMapper.createObjectNode();
