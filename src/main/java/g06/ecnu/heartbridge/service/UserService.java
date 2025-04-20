@@ -45,6 +45,7 @@ public class UserService {
             data.put("username", user.getUsername());
             data.put("email", user.getEmail());
             data.put("password", "*");
+            data.put("phone", user.getPhone());
             data.put("type", user.getType());
             data.put("profile", user.getProfile());
             data.put("theme_preference", user.getThemePreference());

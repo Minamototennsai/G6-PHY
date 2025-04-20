@@ -103,7 +103,7 @@ public class CommentService {
                 comment.setContent(content);
                 comment.setUserId(userId);
                 comment.setTargetId(targetId);
-                comment.setCommentType("forum");
+                comment.setCommentType("comment");
                 comment.setCreateTime(LocalDateTime.now());
                 int result = commentMapper.insert(comment);
                 if (result != 0) {
