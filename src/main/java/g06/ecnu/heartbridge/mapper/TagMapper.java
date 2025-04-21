@@ -23,7 +23,7 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     @Insert("""
             INSERT INTO preferences_tag (user_id, tag_id)
-            VALUES (#{user.id}, #{tag.id})
+            VALUES (#{userId}, #{tagId})
             """)
     void insertPreferenceTag(@Param("userId") int userId, @Param("tagId") int tagId);
 
@@ -34,7 +34,7 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     @Insert("""
             INSERT INTO expertise_tag (user_id, tag_id)
-            VALUES (#{user.id}, #{tag.id})
+            VALUES (#{userId}, #{tagId})
             """)
     void insertExpertiseTag(@Param("userId") int userId, @Param("tagId") int tagId);
 

@@ -30,7 +30,7 @@ public class UserController {
         return userService.getUserInfo(id);
     }
 
-    @PatchMapping("/users/{id}")
+    @PostMapping("/users/{id}")
     public ResponseEntity<Object> updateUserInfo(@PathVariable int id, @RequestBody PatchUserInfoRequestBody body){
         return userService.updateUserInfo(id, body);
     }

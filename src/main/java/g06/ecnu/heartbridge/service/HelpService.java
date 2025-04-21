@@ -3,13 +3,15 @@ package g06.ecnu.heartbridge.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import g06.ecnu.heartbridge.DTO.HelpDTO;
 import g06.ecnu.heartbridge.entity.Help;
+import g06.ecnu.heartbridge.entity.Sessions;
 import g06.ecnu.heartbridge.mapper.HelpMapper;
+import g06.ecnu.heartbridge.mapper.SessionsMapper;
 import g06.ecnu.heartbridge.mapper.UsersMapper;
 import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +33,12 @@ public class HelpService {
 
     @Resource
     private ChatService chatService;
-    @Autowired
+
+    @Resource
     private UsersMapper usersMapper;
+
+    @Resource
+    private SessionsMapper sessionMapper;
 
     //获取求助
     public ResponseEntity<Object> getHelp(Integer helpId){
@@ -48,7 +54,10 @@ public class HelpService {
         for (Help help : helps) {
             HelpDTO helpDTO = new HelpDTO(help);
             helpDTO.setUsername(usersMapper.selectById(help.getSenderId()).getUsername());
-            helpDTOs.add(helpDTO);
+            Sessions session = sessionMapper.selectById(help.getSessionId());
+            if (session.getEndTime() != null) {
+                helpDTOs.add(helpDTO);
+            }
         }
         Map<String, List<HelpDTO>> response = new HashMap<>();
         response.put("data", helpDTOs);
@@ -74,12 +83,14 @@ public class HelpService {
         }
     }
 
+    @Transactional
     public ResponseEntity<Object> handleHelp(int helpId, int consultantId) {
         QueryWrapper<Help> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", helpId);
         Help help = helpMapper.selectOne(queryWrapper);
         int sessionId = help.getSessionId();
         int success = chatService.joinSession(consultantId, sessionId);
+        helpMapper.deleteById(helpId);
         if (success == 0) {
             return ResponseEntity.ok("{\"message\":\"成功加入咨询\"}");
         } else {

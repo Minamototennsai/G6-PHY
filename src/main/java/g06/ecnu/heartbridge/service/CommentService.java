@@ -103,7 +103,7 @@ public class CommentService {
                 comment.setContent(content);
                 comment.setUserId(userId);
                 comment.setTargetId(targetId);
-                comment.setCommentType("forum");
+                comment.setCommentType("comment");
                 comment.setCreateTime(LocalDateTime.now());
                 int result = commentMapper.insert(comment);
                 if (result != 0) {
@@ -158,7 +158,7 @@ public class CommentService {
         for (Comment comment : comments.getRecords()) {
             JsonNode commentNode = buildCommentNode(comment, userId);
 
-            List<Comment> replies = getArticleReplies(comment.getId());
+            List<Comment> replies = getReplies(comment.getId());
             List<JsonNode> replyList = new ArrayList<>();
             for (Comment reply : replies) {
                 JsonNode replyNode = buildCommentNode(reply, userId);
@@ -190,7 +190,7 @@ public class CommentService {
         boolean isLiked = checkIfUserLikedComment(comment.getId(), userId);
         commentNode.put("is_liked", isLiked);
 
-        int replyCount = getArticleReplies(comment.getId()).size();
+        int replyCount = getReplies(comment.getId()).size();
         commentNode.put("reply_count", replyCount);
 
         return commentNode;
@@ -202,14 +202,6 @@ public class CommentService {
                 .eq("user_id", userId)
                 .eq("type", "comment");
         return likedMapper.selectCount(likedQuery) > 0;
-    }
-
-    private List<Comment> getArticleReplies(int commentId) {
-        QueryWrapper<Comment> replyQuery = new QueryWrapper<>();
-        replyQuery.eq("comment_type", "article")
-                .eq("target_id", commentId)
-                .orderByAsc("create_time");
-        return commentMapper.selectList(replyQuery);
     }
 
     public ResponseEntity<Object> getForumComments(int forumId, int userId, int page, int pageSize) {
@@ -227,7 +219,7 @@ public class CommentService {
         List<JsonNode> commentList = new ArrayList<>();
         for (Comment comment : comments.getRecords()) {
             JsonNode commentNode = buildCommentNode(comment, userId);
-            List<Comment> replies = getForumPostReplies(comment.getId());
+            List<Comment> replies = getReplies(comment.getId());
             List<JsonNode> replyList = new ArrayList<>();
             for (Comment reply : replies) {
                 JsonNode replyNode = buildCommentNode(reply, userId);
@@ -244,9 +236,9 @@ public class CommentService {
         return ResponseEntity.ok(response);
     }
 
-    private List<Comment> getForumPostReplies(int commentId) {
+    private List<Comment> getReplies(int commentId) {
         QueryWrapper<Comment> replyQuery = new QueryWrapper<>();
-        replyQuery.eq("comment_type", "forum")
+        replyQuery.eq("comment_type", "comment")
                 .eq("target_id", commentId)
                 .orderByAsc("create_time");
         return commentMapper.selectList(replyQuery);
