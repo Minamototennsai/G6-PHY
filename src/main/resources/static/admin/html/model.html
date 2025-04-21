@@ -3,62 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>面板</title>
+    <link rel="stylesheet" href="../css/style.css">
     <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
     <script src="../js/checktoken.js"></script>
     <script src="../js/model.js"></script>
 </head>
-<style>
-    .consultantData{
-        display: inline-block;
-        margin: 0 5px;
-    }
-</style>
 <body>
-    <div id="title">
-       <a id="search" href="search.html">查询</a>
-       <a id="report" href="report.html">举报列</a>
-       <a id="identify" href="identify.html">认证</a>
-       <a id="model" href="model.html">面板</a>
-    </div>
-    <div id="online">
-        <span>在线</span>
-        <span id="onlineNum"></span>
-        <span>人</span>
-    </div>
-    <div id="scoreList" class="consultantData">
-        <span>咨询师前十评分</span>
-    </div>
-    <div id="sessionList" class="consultantData">
-        <span>咨询师会话进行次数前十排行</span>
-    </div>
-    <div id="nowSession">
-        <span>正在进行的会话:</span>
-    </div>
-    <div id="scheduleWeek">
-        <span>预约情况:之后x天</span>
-        <br>
-        <input type="button" value="0" onclick="getDateSchedule(0)">
-        <input type="button" value="1" onclick="getDateSchedule(1)">
-        <input type="button" value="2" onclick="getDateSchedule(2)">
-        <input type="button" value="3" onclick="getDateSchedule(3)">
-        <input type="button" value="4" onclick="getDateSchedule(4)">
-        <input type="button" value="5" onclick="getDateSchedule(5)">
-        <input type="button" value="6" onclick="getDateSchedule(6)">
-        <div id="panel">
+<nav id="navbar">
+    <a href="search.html">查询</a>
+    <a href="report.html">举报列</a>
+    <a href="identify.html">认证</a>
+    <a href="model.html" class="active">面板</a>
+</nav>
+<div id="mainContainer">
 
+
+    <div id="online" class="panel-card">
+        <strong>当前在线：</strong>
+        <span id="onlineNum">0</span> 人
+    </div>
+
+    <div class="panel-grid">
+        <div id="scoreList" class="panel-card">
+            <h3>咨询师前十评分</h3>
+            <!-- 动态数据 -->
+        </div>
+
+        <div id="sessionList" class="panel-card">
+            <h3>咨询师会话次数排行</h3>
+            <!-- 动态数据 -->
         </div>
     </div>
-</body>
+
+    <div id="nowSession" class="panel-card">
+        <h3>正在进行的会话：</h3>
+        <!-- 动态数据 -->
+    </div>
+
+    <div id="scheduleWeek" class="panel-card">
+        <h3>预约情况：未来 7 天</h3>
+        <div class="schedule-buttons">
+            <button onclick="getDateSchedule(0)">0</button>
+            <button onclick="getDateSchedule(1)">1</button>
+            <button onclick="getDateSchedule(2)">2</button>
+            <button onclick="getDateSchedule(3)">3</button>
+            <button onclick="getDateSchedule(4)">4</button>
+            <button onclick="getDateSchedule(5)">5</button>
+            <button onclick="getDateSchedule(6)">6</button>
+        </div>
+        <div id="panel"></div>
+    </div>
+</div>
+
 <script>
-    if(sessionStorage.getItem('token')==null){
+    if (sessionStorage.getItem('token') == null) {
         alert('你必须先登录');
-        location.href="../admin/index.html";
-    }else{
+        location.href = "../index.html";
+    } else {
         checkToken(sessionStorage.getItem('token'));
     }
+
     daily();
     scoreRank();
     sessionRank();
     nowSession();
 </script>
+</body>
 </html>

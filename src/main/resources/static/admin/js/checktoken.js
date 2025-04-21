@@ -10,11 +10,11 @@ function checkToken(token){
         if(!response.data['isCorrect']){
             alert('你必须先登录');
             sessionStorage.setItem('token', null);
-            location.href="../admin/index.html";
+            location.href="../index.html";
         }
     }).catch(function (error) {
         alert('你必须先登录');
         sessionStorage.setItem('token', null);
-        location.href="../admin/index.html";
+        location.href="../index.html";
     })
 }

@@ -3,44 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>认证</title>
+    <link rel="stylesheet" href="../css/style.css">
     <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
     <script src="../js/checktoken.js"></script>
     <script src="../js/indentify.js"></script>
 </head>
-<style>
-    #prevPageButton,
-    #nextPageButton,
-    #nowPage{
-        display: inline-block;
-        margin: 0 5px;
-    }
-</style>
 <body>
-    <div id="title">
-        <a id="search" href="search.html">查询</a>
-        <a id="report" href="report.html">举报列</a>
-        <a id="identify" href="identify.html">认证</a>
-        <a id="model" href="model.html">面板</a>
-    </div>
+<nav id="navbar">
+    <a href="search.html">查询</a>
+    <a href="report.html">举报列</a>
+    <a href="identify.html" class="active">认证</a>
+    <a href="model.html">面板</a>
+</nav>
+<div id="mainContainer">
+
+
     <div id="identifyList">
+        <!-- 数据动态填充 -->
     </div>
+
     <div id="pageChooser">
-        <div id="prevPageButton">
-            <input type="button" value="上一页" onclick="prevPage()">
-        </div>
-        <span id="nowPage"></span>
-        <div id="nextPageButton">
-            <input type="button" value="下一页" onclick="nextPage()">
-        </div>
+        <button id="prevPageButton" onclick="prevPage()">上一页</button>
+        <span id="nowPage">1</span>
+        <button id="nextPageButton" onclick="nextPage()">下一页</button>
     </div>
-</body>
+</div>
+
 <script>
-    if(sessionStorage.getItem('token')==null){
+    if (sessionStorage.getItem('token') == null) {
         alert('你必须先登录');
-        location.href="../admin/index.html";
-    }else{
+        location.href = "../index.html";
+    } else {
         checkToken(sessionStorage.getItem('token'));
     }
     fillIdentify(1);
 </script>
+</body>
 </html>

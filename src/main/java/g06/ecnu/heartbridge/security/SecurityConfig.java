@@ -1,5 +1,6 @@
 package g06.ecnu.heartbridge.security;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8080"));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -45,11 +46,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // 关闭 CSRF 保护
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/chat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
-                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended","/", "/api/token", "/admin", "/admin/index.html","/admin/js/**", "/admin/css/**", "/admin/html/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended", "/api/token").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.DISABLED))
