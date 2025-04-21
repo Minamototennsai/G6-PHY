@@ -51,7 +51,7 @@ function showDetail(id,type){
     // alert(type)
     sessionStorage.setItem('id',id);
     sessionStorage.setItem('type',type);
-    location.href='/html/search.html';
+    location.href='/admin/html/search.html';
 }
 
 function prevPage(){

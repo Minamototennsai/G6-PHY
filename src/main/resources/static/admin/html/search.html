@@ -43,7 +43,7 @@
 <script>
     if(sessionStorage.getItem('token')==null){
         alert('你必须先登录');
-        location.href="../index.html";
+        location.href="../admin/index.html";
     }else{
         checkToken(sessionStorage.getItem('token'));
     }

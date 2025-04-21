@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/chat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
-                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended","/","/index.html","/js/**","/css/**","/html/**", "/api/token").permitAll()
+                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended","/", "/api/token", "/admin", "/admin/index.html","/admin/js/**", "/admin/css/**", "/admin/html/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
