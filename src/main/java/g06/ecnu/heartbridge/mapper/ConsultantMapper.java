@@ -49,8 +49,8 @@ public interface ConsultantMapper extends BaseMapper<Users> {
     <script>
         SELECT COUNT(DISTINCT u.id)
         FROM users u
-        JOIN expertise_tag et ON u.id = et.user_id
-        JOIN tag t ON et.tag_id = t.id
+        LEFT JOIN expertise_tag et ON u.id = et.user_id
+        LEFT JOIN tag t ON et.tag_id = t.id
         WHERE 1=1 AND u.status = 'active' AND u.type = 'consultant'
         <if test="keyword != null and keyword != ''">
             AND
