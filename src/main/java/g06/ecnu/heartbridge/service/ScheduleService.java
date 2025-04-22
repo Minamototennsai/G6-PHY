@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,14 +43,19 @@ public class ScheduleService {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
-        for (Schedule schedule : schedules) {
+        Iterator<Schedule> iterator = schedules.iterator();
+        while (iterator.hasNext()) {
+            Schedule schedule = iterator.next();
+
             QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
             sessionQueryWrapper.eq("schedule_id", schedule.getId());
-            Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
-            if (session != null) {
-                schedules.remove(schedule);
+            Long result = sessionsMapper.selectCount(sessionQueryWrapper);
+
+            if (result > 0) {
+                iterator.remove(); // ✅ 安全移除
             }
         }
+
         if (!schedules.isEmpty()) {
             Map<String, List<Schedule>> response = new HashMap<>();
             response.put("data", schedules);
