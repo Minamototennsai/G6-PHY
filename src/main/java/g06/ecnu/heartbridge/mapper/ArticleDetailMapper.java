@@ -26,11 +26,7 @@ public interface ArticleDetailMapper {
         writer_name,
         create_time,
         view_count,
-        (
-            select count(*) 
-            from liked 
-            where liked.target_id = articles.id and liked.type = 'article'
-        ) as liked_count,
+        liked_count,
         articles.id as a_id
     from articles 
     join (
