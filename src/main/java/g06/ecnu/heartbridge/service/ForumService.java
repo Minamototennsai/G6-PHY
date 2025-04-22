@@ -74,7 +74,7 @@ public class ForumService {
                 ObjectNode forumNode = objectMapper.createObjectNode();
                 forumNode.put("id", forum.getId());
                 forumNode.put("title", forum.getTitle());
-                forumNode.put("preview", forum.getContent().substring(0,20));
+                forumNode.put("preview", forum.getContent().substring(0, Math.min(forum.getContent().length(), 20)));
                 ArrayNode tagArray = objectMapper.valueToTree(tagMapper.getForumTags(forum.getId()));
                 forumNode.set("tags", tagArray);
                 ObjectNode creatorNode = objectMapper.createObjectNode();
@@ -165,7 +165,7 @@ public class ForumService {
                 ObjectNode forumNode = objectMapper.createObjectNode();
                 forumNode.put("id", forum.getId());
                 forumNode.put("title", forum.getTitle());
-                forumNode.put("preview", forum.getContent().substring(0,20));
+                forumNode.put("preview", forum.getContent().substring(0, Math.min(forum.getContent().length(), 20)));
                 ArrayNode tagArray = objectMapper.valueToTree(tagMapper.getForumTags(forum.getId()));
                 forumNode.set("tags", tagArray);
                 ObjectNode creatorNode = objectMapper.createObjectNode();
@@ -199,7 +199,7 @@ public class ForumService {
                 ObjectNode forumNode = objectMapper.createObjectNode();
                 forumNode.put("id", forum.getId());
                 forumNode.put("title", forum.getTitle());
-                forumNode.put("preview", forum.getContent().substring(0,20));
+                forumNode.put("preview", forum.getContent().substring(0, Math.min(forum.getContent().length(), 20)));
                 ArrayNode tagArray = objectMapper.valueToTree(tagMapper.getForumTags(forum.getId()));
                 forumNode.set("tags", tagArray);
                 ObjectNode creatorNode = objectMapper.createObjectNode();

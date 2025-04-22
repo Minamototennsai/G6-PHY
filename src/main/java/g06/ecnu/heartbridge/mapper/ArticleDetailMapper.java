@@ -20,18 +20,33 @@ public interface ArticleDetailMapper {
      * @return 文章全部细节信息
      */
     @Select("""
-    select title,content,writer_name,create_time,view_count,liked_count,articles.id as a_id
-    from articles join (select id,username as writer_name from users)as u on articles.writer_id = u.id
-    where articles.id=#{id}
+    select 
+        title,
+        content,
+        writer_name,
+        create_time,
+        view_count,
+        (
+            select count(*) 
+            from liked 
+            where liked.target_id = articles.id and liked.type = 'article'
+        ) as liked_count,
+        articles.id as a_id
+    from articles 
+    join (
+        select id, username as writer_name 
+        from users
+    ) as u on articles.writer_id = u.id
+    where articles.id = #{id}
     """)
     @Results({
-            @Result(column = "title",property = "title"),
-            @Result(column = "content",property = "content"),
-            @Result(column = "writer_name",property = "writer_name"),
-            @Result(column = "create_time",property = "create_time"),
-            @Result(column = "view_count",property = "views_count"),
-            @Result(column = "liked_count",property = "liked_count"),
-            @Result(column = "a_id",property = "tags",many = @Many(select = "g06.ecnu.heartbridge.mapper.ArticleDetailMapper.getAllTagByArticleId",fetchType = FetchType.EAGER))
+            @Result(column = "title", property = "title"),
+            @Result(column = "content", property = "content"),
+            @Result(column = "writer_name", property = "writer_name"),
+            @Result(column = "create_time", property = "create_time"),
+            @Result(column = "view_count", property = "views_count"),
+            @Result(column = "liked_count", property = "liked_count"),
+            @Result(column = "a_id", property = "tags", many = @Many(select = "g06.ecnu.heartbridge.mapper.ArticleDetailMapper.getAllTagByArticleId", fetchType = FetchType.EAGER))
     })
     public ArticleDetailDTO getArticleDetailById(@Param("id") int id);
 
