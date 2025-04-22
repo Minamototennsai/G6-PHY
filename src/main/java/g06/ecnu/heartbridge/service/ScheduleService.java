@@ -43,7 +43,6 @@ public class ScheduleService {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
-
         if (!schedules.isEmpty()) {
             Map<String, List<Schedule>> response = new HashMap<>();
             response.put("data", schedules);

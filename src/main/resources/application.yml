@@ -1,8 +1,6 @@
 spring:
   application:
     name: heartbridge
-  profiles:
-    active: ltdz
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,8 +14,21 @@ spring:
         size: 5
   web:
     resources:
-      #TODO : edit.
       static-locations: file:///C:/Users/minam/Desktop/image/, classpath:/static
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.31.60.32:3306/phy_test
+    username: g06
+    password: g06
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+server:
+  servlet:
+    session:
+      timeout: 30m
+  port: 8888
 
 logging:
   level:
@@ -34,5 +45,6 @@ logging:
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   type-aliases-package: g06/ecnu/heartbridge/entity
+
 image-upload:
   path: file:///C:/Users/minam/Desktop/image/

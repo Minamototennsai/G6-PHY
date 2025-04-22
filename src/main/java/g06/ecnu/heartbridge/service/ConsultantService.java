@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -107,12 +104,14 @@ public class ConsultantService {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("consultant_id", consultantId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
-        for (Schedule schedule : schedules) {
+        Iterator<Schedule> iterator = schedules.iterator();
+        while (iterator.hasNext()) {
+            Schedule schedule = iterator.next();
             QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
             sessionQueryWrapper.eq("schedule_id", schedule.getId());
             Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
             if (session != null) {
-                schedules.remove(schedule);
+                iterator.remove();  // 使用 iterator 的 remove() 方法删除元素
             }
         }
         if (!schedules.isEmpty()) {

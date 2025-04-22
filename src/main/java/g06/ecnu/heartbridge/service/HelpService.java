@@ -37,8 +37,6 @@ public class HelpService {
     @Resource
     private UsersMapper usersMapper;
 
-    @Resource
-    private SessionsMapper sessionMapper;
 
     //获取求助
     public ResponseEntity<Object> getHelp(Integer helpId){
@@ -54,10 +52,7 @@ public class HelpService {
         for (Help help : helps) {
             HelpDTO helpDTO = new HelpDTO(help);
             helpDTO.setUsername(usersMapper.selectById(help.getSenderId()).getUsername());
-            Sessions session = sessionMapper.selectById(help.getSessionId());
-            if (session.getEndTime() != null) {
-                helpDTOs.add(helpDTO);
-            }
+            helpDTOs.add(helpDTO);
         }
         Map<String, List<HelpDTO>> response = new HashMap<>();
         response.put("data", helpDTOs);
@@ -88,6 +83,9 @@ public class HelpService {
         QueryWrapper<Help> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", helpId);
         Help help = helpMapper.selectOne(queryWrapper);
+        if (help.getSenderId() == consultantId) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"加入咨询失败\"}");
+        }
         int sessionId = help.getSessionId();
         int success = chatService.joinSession(consultantId, sessionId);
         helpMapper.deleteById(helpId);
