@@ -31,18 +31,18 @@ public class StringToListTypeHandler extends BaseTypeHandler<List<String>> {
     public List<String> getNullableResult(ResultSet rs, String columnName) throws SQLException {
         // 读取数据库时，把 "a,b,c" 转换成 List<String>
         String text = rs.getString(columnName);
-        return text == null ? null : Arrays.asList(text.split(","));
+        return (text == null || text.isEmpty()) ? List.of() : Arrays.asList(text.split(","));
     }
 
     @Override
     public List<String> getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String text = rs.getString(columnIndex);
-        return text == null ? null : Arrays.asList(text.split(","));
+        return (text == null || text.isEmpty()) ? List.of() : Arrays.asList(text.split(","));
     }
 
     @Override
     public List<String> getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String text = cs.getString(columnIndex);
-        return text == null ? null : Arrays.asList(text.split(","));
+        return (text == null || text.isEmpty()) ? List.of() : Arrays.asList(text.split(","));
     }
 }

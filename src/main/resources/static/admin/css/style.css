@@ -1,0 +1,175 @@
+/* 导航栏样式 */
+#navbar {
+    background-color: #f8bbd0;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#navbar a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #6a1b9a;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+#navbar a:hover {
+    color: #4a148c;
+}
+
+#navbar a.active {
+    border-bottom: 2px solid #4a148c;
+}
+
+/* 主体容器 */
+#mainContainer {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 分页按钮 */
+#pageChooser {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#pageChooser button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #ab47bc;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pageChooser button:hover {
+    background-color: #8e24aa;
+}
+
+#nowPage {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4a148c;
+}
+
+/* 面板卡片样式 */
+.panel-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.panel-card h3 {
+    margin-top: 0;
+    color: #6a1b9a;
+}
+
+/* 两列布局 */
+.panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* 预约按钮样式 */
+.schedule-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.schedule-buttons button {
+    padding: 8px 14px;
+    border: none;
+    background-color: #ce93d8;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.schedule-buttons button:hover {
+    background-color: #ab47bc;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 举报卡片展示（你可以在 fillReportList 中动态生成这些） */
+#reportList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.report-card {
+    background-color: #f3e5f5;
+    border-left: 6px solid #ab47bc;
+    padding: 16px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.report-card h4 {
+    margin: 0 0 8px 0;
+    color: #6a1b9a;
+}
+
+.report-card p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 分页按钮 */
+#pageChooser {
+    text-align: center;
+    margin-top: 30px;
+}
+
+#pageChooser button {
+    padding: 8px 16px;
+    margin: 0 10px;
+    background-color: #ce93d8;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#pageChooser button:hover {
+    background-color: #ab47bc;
+}
+
+#nowPage {
+    font-weight: bold;
+    color: #6a1b9a;
+    font-size: 16px;
+}
+
+
+

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查询</title>
+    <script src="../js/http_unpkg.com_axios_dist_axios.js"></script>
+    <script src="../js/checktoken.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/search.js"></script>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<div id="navbar">
+    <a id="search" class="active" href="search.html">查询</a>
+    <a id="report" href="report.html">举报列</a>
+    <a id="identify" href="identify.html">认证</a>
+    <a id="model" href="model.html">面板</a>
+</div>
+
+<!-- 主体内容容器 -->
+<div id="mainContainer">
+    <!-- 搜索区域 -->
+    <div class="panel-card">
+        <h3>搜索中心</h3>
+        <div id="blank" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input id="searchTextbox" type="text" placeholder="请输入关键词" style="flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px;">
+            <input type="button" value="搜索"
+                   style="padding: 8px 16px; background-color: #ab47bc; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;"
+                   onclick="search(document.getElementById('searchTextbox').value, document.querySelector('input[name=\'type\']:checked').value)">
+        </div>
+
+        <!-- 单选项 -->
+        <div id="singleChooser" style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <label><input class="sig" type="radio" name="type" value="user" checked> 用户</label>
+            <label><input class="sig" type="radio" name="type" value="article"> 文章</label>
+            <label><input class="sig" type="radio" name="type" value="forum"> 论坛</label>
+            <label><input class="sig" type="radio" name="type" value="evaluate"> 评论</label>
+            <label><input class="sig" type="radio" name="type" value="consult"> 会话</label>
+        </div>
+    </div>
+
+    <!-- 搜索结果展示区域 -->
+    <div id="display" class="panel-grid">
+        <!-- JS 动态填充结果 -->
+    </div>
+
+    <!-- 分页区域 -->
+    <div id="pageChooser">
+        <!-- JS 动态生成分页 -->
+    </div>
+</div>
+
+<script>
+    if (sessionStorage.getItem('token') == null) {
+        alert('你必须先登录');
+        location.href = "../index.html";
+    } else {
+        checkToken(sessionStorage.getItem('token'));
+    }
+    let id = sessionStorage.getItem('id');
+    let type = sessionStorage.getItem('type');
+    if (id != null && type != null) search(id, type);
+</script>
+</body>
+</html>
