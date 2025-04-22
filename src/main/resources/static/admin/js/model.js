@@ -55,7 +55,7 @@ function nowSession(){
             '<span>一共'+total+'条记录</span>';
         for(let i in session){
             document.getElementById('nowSession').innerHTML+='<br>' +
-                '<span>会话id:'+session[i]['id']+'</span>';
+                '<span>会话id:'+session[i]+'</span>';
         }
     })
 }
@@ -72,7 +72,7 @@ function getDateSchedule(date){
         panel.innerHTML='';
         let schedule=response.data['schedules'];
         for(let i in schedule){
-            if(schedule[i]['time']!==date){
+            if(schedule[i]['date']!==date){
                 continue;
             }
             panel.innerHTML+='<br>' +
