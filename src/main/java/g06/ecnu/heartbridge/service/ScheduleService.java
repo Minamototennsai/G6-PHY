@@ -43,18 +43,6 @@ public class ScheduleService {
         QueryWrapper<Schedule> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", clientId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
-        Iterator<Schedule> iterator = schedules.iterator();
-        while (iterator.hasNext()) {
-            Schedule schedule = iterator.next();
-
-            QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
-            sessionQueryWrapper.eq("schedule_id", schedule.getId());
-            Long result = sessionsMapper.selectCount(sessionQueryWrapper);
-
-            if (result > 0) {
-                iterator.remove(); // ✅ 安全移除
-            }
-        }
 
         if (!schedules.isEmpty()) {
             Map<String, List<Schedule>> response = new HashMap<>();
@@ -106,5 +94,10 @@ public class ScheduleService {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\":\"预约失败\"}");
         }
+    }
+
+    public ResponseEntity<Object> cancelSchedule(int scheduleId) {
+        scheduleMapper.deleteById(scheduleId);
+        return ResponseEntity.ok("{\"message\":\"取消成功\"}");
     }
 }

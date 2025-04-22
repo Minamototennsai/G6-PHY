@@ -32,7 +32,7 @@ public interface ConsultantMapper extends BaseMapper<Users> {
                 OR t.name LIKE CONCAT('%', #{keyword}, '%'))
         </if>
         GROUP BY u.id
-        LIMIT #{page}, #{pageSize}
+        LIMIT #{pageSize} OFFSET #{offset}
     </script>
     """)
     @Results({
@@ -43,7 +43,8 @@ public interface ConsultantMapper extends BaseMapper<Users> {
     })
     List<ConsultantTagDTO> searchConsultants(@Param("keyword") String keyword,
                                           @Param("page") int page,
-                                          @Param("pageSize") int pageSize);
+                                          @Param("pageSize") int pageSize,
+                                          @Param("offset") int offset);
 
     @Select("""
     <script>
@@ -65,8 +66,8 @@ public interface ConsultantMapper extends BaseMapper<Users> {
     <script>
         SELECT u.id, u.username, u.profile, GROUP_CONCAT(t.name) AS tags
         FROM users u
-        JOIN expertise_tag et ON u.id = et.user_id
-        JOIN tag t ON et.tag_id = t.id
+        LEFT JOIN expertise_tag et ON u.id = et.user_id
+        LEFT JOIN tag t ON et.tag_id = t.id
         WHERE
             u.id != #{consultantId}
             AND t.id = (SELECT tag_id FROM expertise_tag WHERE user_id = #{consultantId})
@@ -85,8 +86,8 @@ public interface ConsultantMapper extends BaseMapper<Users> {
     <script>
         SELECT u.id, u.username, GROUP_CONCAT(t.name) AS tags, u.profile, c.avg_score
         FROM users u
-        JOIN expertise_tag et ON u.id = et.user_id
-        JOIN tag t ON et.tag_id = t.id
+        LEFT JOIN expertise_tag et ON u.id = et.user_id
+        LEFT JOIN tag t ON et.tag_id = t.id
         JOIN consultant_detail c ON u.id = c.user_id
         WHERE
              u.id = #{id}

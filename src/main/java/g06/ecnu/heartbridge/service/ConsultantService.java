@@ -137,8 +137,9 @@ public class ConsultantService {
     }
 
     //根据关键词搜索咨询师
-    public ResponseEntity<Object> getConsultant(String keyword, Integer page, Integer pageSize) {
-        List<ConsultantTagDTO> result = consultantMapper.searchConsultants(keyword, page, pageSize);
+    public ResponseEntity<Object> getConsultant(String keyword, Integer page, Integer pageSize, String tags) {
+        int offset = (page - 1) * pageSize;
+        List<ConsultantTagDTO> result = consultantMapper.searchConsultants(keyword, page, pageSize, offset);
         for (ConsultantTagDTO consultantTagDTO : result) {
             int consultantId = consultantTagDTO.getId();
             QueryWrapper<ConsultantDetail> queryWrapper = new QueryWrapper<>();

@@ -156,7 +156,8 @@ public class ForumService {
     }
 
     public ResponseEntity<Object> getJoinedForums(int userId, int page) {
-        List<Forum> forums = forumMapper.findForumsByUserId(userId, page-1, 10);
+        int offset = (page - 1) * 10;
+        List<Forum> forums = forumMapper.findForumsByUserId(userId, page-1, 10, offset);
         if (!forums.isEmpty()) {
             ObjectNode response = objectMapper.createObjectNode();
             ObjectNode data = objectMapper.createObjectNode();
