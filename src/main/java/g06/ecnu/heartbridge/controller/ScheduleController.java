@@ -31,4 +31,9 @@ public class ScheduleController {
     public ResponseEntity<Object> addSchedule(@RequestParam int consultant_id, @RequestParam int client_id, @RequestParam String date, @RequestParam String time) {
         return scheduleService.addSchedule(consultant_id, client_id, date, time);
     }
+
+    @PostMapping("/schedules/{id}/cancel")
+    public ResponseEntity<Object> cancelSchedule(@PathVariable int id) {
+        return scheduleService.cancelSchedule(id);
+    }
 }

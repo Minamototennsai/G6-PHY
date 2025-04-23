@@ -50,15 +50,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/chat/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/image/**").permitAll()
-                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended", "/api/token").permitAll()
+                        .requestMatchers("/api/user/register", "/api/user/login", "/api/admin/login","/api/articles/recommended", "/api/token", "/api/consultants/recommended", "/api/consultants/*/availability").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .headers(headers -> headers
                         .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.DISABLED))
-                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; " +
-                                "script-src 'self' 'unsafe-inline'; " +
-                                "style-src 'self' 'unsafe-inline';"))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'self'; " +
+                                        "script-src 'self' 'unsafe-inline'; " +
+                                        "style-src 'self' 'unsafe-inline'; " +
+                                        "img-src 'self' http: https: data:;"
+                        ))
+
                         .frameOptions(frame -> frame.disable()) // 允许 WebSocket 帧
                 )
                 .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)

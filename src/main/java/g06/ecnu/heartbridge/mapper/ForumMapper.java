@@ -25,8 +25,9 @@ public interface ForumMapper extends BaseMapper<Forum> {
             "WHERE f.creator_id = #{userId} " +
             "OR c1.user_id = #{userId} " +
             "OR c2.user_id = #{userId} " +
-            "LIMIT #{page}, #{pageSize}")
+            "LIMIT #{pageSize} OFFSET #{offset}")
     List<Forum> findForumsByUserId(@Param("userId") int userId,
                                    @Param("page") int page,
-                                   @Param("pageSize") int pageSize);
+                                   @Param("pageSize") int pageSize,
+                                   @Param("offset") int offset);
 }

@@ -48,8 +48,13 @@ public class ConsultantSuggestService {
         return suggest;
     }
     public ResponseEntity<SuggestConsultantListDTO> getSuggestConsultants(Integer count,HttpServletRequest request){
-        String jwt=request.getHeader("Authorization").substring(7);
-        int userId= JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        int userId;
+        if (request.getHeader("Authorization") != null) {
+            String jwt=request.getHeader("Authorization").substring(7);
+            userId= JwtUtil.validateToken(jwt).get("userId", Integer.class);
+        } else {
+            userId = 1;
+        }
         UserWithPreferAndArticleHistoryDTO dto=userArticleHistoryMapper.getRecord(userId);
         ConsultantSuggest suggest= initConsultantSuggest(dto);
         List<ConsultantDetail> list=consultantSearchMapper.getAllConsultants();

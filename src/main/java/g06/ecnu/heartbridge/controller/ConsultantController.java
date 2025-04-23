@@ -41,8 +41,8 @@ public class ConsultantController {
     }
 
     @GetMapping("/consultants/list")
-    public ResponseEntity<Object> getConsultant(@RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        return consultantService.getConsultant(keyword, page, pageSize);
+    public ResponseEntity<Object> getConsultant(@RequestParam(required = false) String keyword, @RequestParam(required = false, defaultValue = "0") Integer page, @RequestParam(required = false, defaultValue = "10") Integer pageSize, @RequestParam(required = false) String tags) {
+        return consultantService.getConsultant(keyword, page, pageSize, tags);
     }
 
     @GetMapping("/consultants/{consultant_id}")
