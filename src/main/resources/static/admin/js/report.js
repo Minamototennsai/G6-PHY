@@ -21,7 +21,7 @@ function fillReportList(page){
             let sender_id=reports[i]['sender_id'];
             let target_id=reports[i]['target_id'];
             block.innerHTML+='<div id="report'+id+'">\n' +
-                '               <span>'+id+'举报类型:'+type+' 发送者:'+sender_id+'被举报者:'+target_id+'</span>\n' +
+                '               <span>'+id+'举报类型:'+type+' 发送者:'+sender_id+'被举报者:'+target_id+getT(70-(id+type+sender_id+target_id).length)+'</span>\n'+
                 '               <input type="button" value="查看" onclick="showDetail('+id+',\''+type+'\')">\n' +
                 '               <input type="button" value="忽略" onclick="ignoreReport('+id+')">\n' +
                 '               <br>\n' +
@@ -66,4 +66,12 @@ function prevPage(){
 function nextPage(){
     let nowPage=parseInt(document.getElementById('nowPage').innerHTML);
     fillReportList(nowPage+1);
+}
+
+function getT(n){
+    let c="";
+    for(let i=0;i<n;i++){
+        c+='.';
+    }
+    return c;
 }

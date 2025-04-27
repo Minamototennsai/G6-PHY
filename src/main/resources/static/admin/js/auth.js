@@ -13,7 +13,7 @@ function handleLogin(account,password){
         if(response.status === 200){
             sessionStorage.setItem('token', response.data.token);
             //console.log(localStorage.getItem('token'));
-            location.href="/admin/html/report.html"
+            location.href="/admin/html/model.html"
         }else if(response.status === 400){
             alert("账户或密码错误");
         }

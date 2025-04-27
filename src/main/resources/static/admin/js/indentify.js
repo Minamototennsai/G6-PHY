@@ -19,7 +19,8 @@ function fillIdentify(page){
             let username=applications[i]['username'];
             let authentication_code=applications[i]['authentication_code'];
             block.innerHTML+='<div id="identify'+id+'">\n' +
-                '               <span>用户'+username+':'+authentication_code+'</span>\n' +
+                '               <span>用户'+username+':'+authentication_code+getT(70-(
+                    username+authentication_code).length)+'</span>\n'+
                 '               <input type="button" value="接受" onclick="action('+id+','+'\'approve\''+')">\n' +
                 '               <input type="button" value="拒绝" onclick="action('+id+','+'\'reject\''+')">\n' +
                 '             </div>'
@@ -54,4 +55,12 @@ function prevPage(){
 function nextPage(){
     let nowPage=parseInt(document.getElementById('nowPage').innerHTML);
     fillIdentify(nowPage+1);
+}
+
+function getT(n){
+    let c="";
+    for(let i=0;i<n;i++){
+        c+='.';
+    }
+    return c;
 }

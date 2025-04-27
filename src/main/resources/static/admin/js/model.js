@@ -21,7 +21,11 @@ function scoreRank(){
         let object=document.getElementById('scoreList');
         for(let i in consultants){
             object.innerHTML+='<br>' +
-                              '<span>'+consultants[i]['id']+':'+consultants[i]['name']+'...score:'+consultants[i]['score']+'</span>'
+                              '<span>'+consultants[i]['id']+':'+consultants[i]['name']
+            for(let j=0;j<25-consultants[i]['name'].length;j++){
+                object.innerHTML+='.';
+            }
+            object.innerHTML+='score:'+consultants[i]['score']+'</span>'
         }
     })
 }
@@ -37,7 +41,12 @@ function sessionRank(){
         let object=document.getElementById('sessionList');
         for(let i in consultants){
             object.innerHTML+='<br>' +
-                '<span>'+consultants[i]['id']+':'+consultants[i]['name']+'...score:'+consultants[i]['num_session']+'</span>'
+                '<span>'+consultants[i]['id']+':'+consultants[i]['name']
+            console.log(consultants[i]['name'].length);
+            for(let j=0;j<25-(consultants[i]['id']+':'+consultants[i]['name']).length;j++){
+                object.innerHTML+='.';
+            }
+            object.innerHTML+='score:'+consultants[i]['num_session']+'</span>'
         }
     })
 }
