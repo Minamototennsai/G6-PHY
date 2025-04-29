@@ -84,6 +84,7 @@ public class SessionService {
                     userNodes.add(userNode);
                 }
                 sessionNode.set("user", userNodes);
+                sessionNode.put("start_time", session.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 if (session.getEndTime() != null) {
                     sessionNode.put("end_time", session.getEndTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 } else {

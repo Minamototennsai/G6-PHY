@@ -105,15 +105,15 @@ public class ConsultantService {
         queryWrapper.eq("consultant_id", consultantId);
         List<Schedule> schedules = scheduleMapper.selectList(queryWrapper);
         Iterator<Schedule> iterator = schedules.iterator();
-        while (iterator.hasNext()) {
-            Schedule schedule = iterator.next();
-            QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
-            sessionQueryWrapper.eq("schedule_id", schedule.getId());
-            Sessions session = sessionsMapper.selectOne(sessionQueryWrapper);
-            if (session != null) {
-                iterator.remove();  // 使用 iterator 的 remove() 方法删除元素
-            }
-        }
+//        while (iterator.hasNext()) {
+//            Schedule schedule = iterator.next();
+//            QueryWrapper<Sessions> sessionQueryWrapper = new QueryWrapper<>();
+//            sessionQueryWrapper.eq("schedule_id", schedule.getId());
+//            List<Sessions> sessions = sessionsMapper.selectList(sessionQueryWrapper);
+//            if (sessions != null) {
+//                iterator.remove();  // 使用 iterator 的 remove() 方法删除元素
+//            }
+//        }
         if (!schedules.isEmpty()) {
             ObjectNode response = objectMapper.createObjectNode();
             ObjectNode data = objectMapper.createObjectNode();
